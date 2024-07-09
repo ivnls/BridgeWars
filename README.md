@@ -4,17 +4,13 @@ BattleSessions
 O plugin BattleSessions adiciona um novo minigame pvp em que jogadores lutam coletam recursos e lutam em ilhas que são conectadas por pontes geradas em uma determinada ocasião na partida.
 
 
-
-
-![Logo](images/bw-logo.png)
+<img src="images/bw-logo.png" alt="Logo" width="600"/>
 
 
 ## Funcionalidades
 
-- Temas dark e light
-- Preview em tempo real
-- Modo tela cheia
-- Multiplataforma
+- Comandos /fight <Modo de jogo>, /ptop <Modo de jogo> <Quantidade de players listadps>
+- Geração Randomizada de Baús, Itens e localização de spawn na partida
 
 
 ## Screenshots
@@ -26,14 +22,13 @@ O plugin BattleSessions adiciona um novo minigame pvp em que jogadores lutam col
 
 ## Rodando os testes
 
-Para rodar os testes, rode o seguinte comando
 
 ```bash
-  npm run test
+  
 ```
 
 
 ## Autores
 
-- [@octokatherine](https://www.github.com/octokatherine)
+- [@ivnls](https://www.github.com/ivnls)
 

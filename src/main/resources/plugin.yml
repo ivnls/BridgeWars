@@ -1,0 +1,12 @@
+name: BattleSessions-1.20.6
+version: '${project.version}'
+main: ivanhauu.tech.battlesessions.BattleSessions
+api-version: '1.20'
+author: ivnls
+commands:
+  fight:
+    description: Vá Lutar!
+  spawn:
+    description: Vá ao Spawn!
+  ptop:
+    description: Os melhores players!

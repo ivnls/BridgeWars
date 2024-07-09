@@ -4,7 +4,7 @@ BattleSessions
 O plugin BattleSessions adiciona um novo minigame pvp em que jogadores lutam coletam recursos e lutam em ilhas que são conectadas por pontes geradas em uma determinada ocasião na partida.
 
 
-<img src="images/bw-logo.png" alt="Logo" width="600"/>
+<img src="images/bw-logo.png" alt="Logo" width="200"/>
 
 
 ## Funcionalidades

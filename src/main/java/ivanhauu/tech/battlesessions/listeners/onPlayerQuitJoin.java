@@ -4,11 +4,18 @@ import ivanhauu.tech.battlesessions.BattleSessions;
 import ivanhauu.tech.battlesessions.WorldManager;
 import ivanhauu.tech.battlesessions.utils.GetPlayerRank;
 import org.bukkit.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.*;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -28,7 +35,7 @@ public class onPlayerQuitJoin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         World mundo = player.getWorld();
-        World spawn_world = Bukkit.getWorld("spawn");
+        World spawn_world = Bukkit.getWorld("world");
 
         if (mundo.getName().startsWith("battle_8v8_") || mundo.getName().startsWith("battle_4v4_")) {
             Location spawn = new Location(spawn_world, 8, 0, 8);
@@ -51,6 +58,12 @@ public class onPlayerQuitJoin implements Listener {
                 p.sendMessage(ChatColor.GREEN + player.getName() + " entrou no jogo!");
             }
         }
+
+        Location pod1 = new Location(spawn_world, 8.5, 0, -12.5);
+        Location pod2 = new Location(spawn_world, 12.5, -1, -12.5);
+        Location pod3 = new Location(spawn_world, 4.5, -2, -12.5);
+
+        playerPodium(pod1, pod2, pod3);
     }
 
     @EventHandler
@@ -65,5 +78,57 @@ public class onPlayerQuitJoin implements Listener {
                 worldManager.deleteWorldIfEmpty(world.getName());
             }
         }, 20L);
+    }
+
+    public void playerPodium(Location pod1, Location pod2, Location pod3) {
+
+        World world1 = pod1.getWorld();
+
+        // Obter todos os jogadores do arquivo de configuração
+        Set<String> players = plugin.getPlayerConfig().getConfigurationSection("players").getKeys(false);
+
+        // Lista para armazenar jogadores e suas vitórias
+        List<Map.Entry<String, Integer>> playerWins = new ArrayList<>();
+
+        // Iterar sobre os jogadores e adicionar seus wins à lista
+        for (String player : players) {
+            int wins = plugin.getPlayerConfig().getInt("players." + player + ".4v4wins");
+            playerWins.add(new AbstractMap.SimpleEntry<>(player, wins));
+        }
+
+        // Ordenar a lista pelo número de vitórias em ordem decrescente
+        playerWins.sort((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()));
+
+        // Pegar os top 3 jogadores
+        List<Map.Entry<String, Integer>> topPlayers = playerWins.subList(0, Math.min(3, playerWins.size()));
+
+        for (Entity e : world1.getEntities()) {
+            if (e.getType().equals(EntityType.ARMOR_STAND)) {
+                e.remove();
+            }
+        }
+
+        Location[] podiumLocations = { pod1, pod2, pod3 };
+
+        for (int i = 0;topPlayers.size() > i; i++) {
+            String top = topPlayers.get(i).getKey();
+            int wins = topPlayers.get(i).getValue();
+
+            ArmorStand armorStand = (ArmorStand) world1.spawnEntity(podiumLocations[i], EntityType.ARMOR_STAND);
+            armorStand.setGravity(false);
+            armorStand.setVisible(false);
+            armorStand.setRotation(0, 180);
+
+            // Definir a cabeça do armor stand para a skin do jogador
+            ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta meta = (SkullMeta) skull.getItemMeta();
+            meta.setOwner(top);
+            skull.setItemMeta(meta);
+            armorStand.setHelmet(skull);
+
+            // Definir o nome do jogador e o número de vitórias como a etiqueta do armor stand
+            armorStand.setCustomName(top + " - " + wins + " vitórias");
+            armorStand.setCustomNameVisible(true);
+        }
     }
 }

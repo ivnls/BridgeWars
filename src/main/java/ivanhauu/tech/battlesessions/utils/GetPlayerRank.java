@@ -20,9 +20,9 @@ public class GetPlayerRank {
         String rankPrefix = null;
 
         if (ptsTotal >= 50) {
-            return "§2[♅]";
+            return "§6[♅]";
         } else if (ptsTotal >= 40) {
-            return "§b[☉]"; //Rank MESTRE (☉) 40 a 50
+            return "§9[☉]"; //Rank MESTRE (☉) 40 a 50
         } else if (ptsTotal >= 30) {
             return "§b[★]"; //Rank PROFISSIONAL (★) 30 a 40
         } else if (ptsTotal >= 20) {
@@ -30,7 +30,7 @@ public class GetPlayerRank {
         } else if (ptsTotal >= 10) {
             return "§4[♯]"; //Rank LUTADOR (♯) 10 a 20
         } else if (ptsTotal >= 5) {
-            return "§9[♤]"; //rank INICIANTE (♤) 5 a 10
+            return "§2[♤]"; //rank INICIANTE (♤) 5 a 10
         } else {
             return "§7[D]"; //Rank Default (Provavelmente nenhuma insígnia)
         }

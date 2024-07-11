@@ -17,6 +17,7 @@ public final class BattleSessions extends JavaPlugin {
     private GetPlayerRank getPlayerRank;
     private WorldManager worldManager;
     private GenerateChest generateChest;
+    private PlayerWinner playerWinner;
 
     private denyAllowBuild denyAllowBuild;
     private onAdvancement onAdvancement;
@@ -36,13 +37,14 @@ public final class BattleSessions extends JavaPlugin {
     public void onEnable() {
         getLogger().info("O plugin BattleSessions foi iniciado!");
         worldManager = new WorldManager(this);
+        playerWinner = new PlayerWinner(this, worldManager);
         generateChest = new GenerateChest(this);
+        getPlayerRank = new GetPlayerRank(this);
         startBattle = new startBattle(this, generateChest);
-        onPlayerKill = new onPlayerKill(worldManager, this);
+        onPlayerKill = new onPlayerKill(this, playerWinner);
         denyAllowBuild = new denyAllowBuild(this);
         onPlayerQuitJoin = new onPlayerQuitJoin(this, worldManager, getPlayerRank);
-        onPlayerDamage = new onPlayerDamage(this);
-        getPlayerRank = new GetPlayerRank(this);
+        onPlayerDamage = new onPlayerDamage(this, playerWinner);
         playerChat = new playerChat(this, getPlayerRank);
         onAdvancement = new onAdvancement();
         playerMove = new playerMove(this);
@@ -68,6 +70,10 @@ public final class BattleSessions extends JavaPlugin {
     @Override
     public void onDisable() {
         getLogger().info("O plugin BattleSessions foi encerrado!");
+    }
+
+    public PlayerWinner getPlayerWinner() {
+        return playerWinner;
     }
 
     // Criar o arquivo de database battle.yml

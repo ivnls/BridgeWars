@@ -1,8 +1,8 @@
-package ivanhauu.tech.battlesessions;
+package ivanhauu.tech.bridgewars;
 
-import ivanhauu.tech.battlesessions.commands.*;
-import ivanhauu.tech.battlesessions.listeners.*;
-import ivanhauu.tech.battlesessions.utils.GetPlayerRank;
+import ivanhauu.tech.bridgewars.commands.*;
+import ivanhauu.tech.bridgewars.listeners.*;
+import ivanhauu.tech.bridgewars.utils.GetPlayerRank;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public final class BattleSessions extends JavaPlugin {
+public final class BridgeWars extends JavaPlugin {
 
     private GetPlayerRank getPlayerRank;
     private WorldManager worldManager;
@@ -35,7 +35,7 @@ public final class BattleSessions extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("O plugin BattleSessions foi iniciado!");
+        getLogger().info("O plugin BridgeWars foi iniciado!");
         worldManager = new WorldManager(this);
         playerWinner = new PlayerWinner(this, worldManager);
         generateChest = new GenerateChest(this);
@@ -69,7 +69,7 @@ public final class BattleSessions extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getLogger().info("O plugin BattleSessions foi encerrado!");
+        getLogger().info("O plugin BridgeWars foi encerrado!");
     }
 
     public PlayerWinner getPlayerWinner() {
@@ -105,13 +105,13 @@ public final class BattleSessions extends JavaPlugin {
         }
     }
 
-    // Método para setar uma partida 8v8 como iniciada(true) terminada(false)
-    public void is8v8BattleStart(String battleName, boolean is8v8BattleStarted) {
-        battleConfig.set("worlds." + battleName + ".is8v8BattleStarted", is8v8BattleStarted);
+    // Método para setar uma partida 2v2 como iniciada(true) terminada(false)
+    public void is2v2BattleStart(String battleName, boolean is2v2BattleStarted) {
+        battleConfig.set("worlds." + battleName + ".is2v2BattleStarted", is2v2BattleStarted);
         try {
             battleConfig.save(battleFile);
         } catch (IOException e) {
-            getLogger().warning("Erro ao modificar --> salvar o arquivo battleConfig para partida 8v8: " + e.getMessage());
+            getLogger().warning("Erro ao modificar --> salvar o arquivo battleConfig para partida 2v2: " + e.getMessage());
         }
     }
 

@@ -1,7 +1,7 @@
-package ivanhauu.tech.battlesessions.listeners;
+package ivanhauu.tech.bridgewars.listeners;
 
-import ivanhauu.tech.battlesessions.BattleSessions;
-import ivanhauu.tech.battlesessions.utils.GetPlayerRank;
+import ivanhauu.tech.bridgewars.BridgeWars;
+import ivanhauu.tech.bridgewars.utils.GetPlayerRank;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -11,10 +11,10 @@ import org.bukkit.event.player.PlayerChatEvent;
 
 public class playerChat implements Listener {
 
-    private final BattleSessions plugin;
+    private final BridgeWars plugin;
     private final GetPlayerRank getPlayerRank;
 
-    public playerChat(BattleSessions plugin, GetPlayerRank getPlayerRank) {
+    public playerChat(BridgeWars plugin, GetPlayerRank getPlayerRank) {
         this.plugin = plugin;
         this.getPlayerRank = getPlayerRank;
     }

@@ -1,7 +1,7 @@
-package ivanhauu.tech.battlesessions.commands;
+package ivanhauu.tech.bridgewars.commands;
 
-import ivanhauu.tech.battlesessions.BattleSessions;
-import ivanhauu.tech.battlesessions.WorldManager;
+import ivanhauu.tech.bridgewars.BridgeWars;
+import ivanhauu.tech.bridgewars.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,9 +13,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class Fight implements CommandExecutor {
     private final WorldManager worldManager;
-    private final BattleSessions plugin;
+    private final BridgeWars plugin;
 
-    public Fight(WorldManager worldManager, BattleSessions plugin) {
+    public Fight(WorldManager worldManager, BridgeWars plugin) {
         this.worldManager = worldManager;
         this.plugin = plugin;
     }
@@ -36,7 +36,7 @@ public class Fight implements CommandExecutor {
 
         if (args[0].equals("list")) {
             sender.sendMessage("Modos de jogo disponíveis:");
-            sender.sendMessage("8v8 --> 8 jogadores lutam entre si!");
+            sender.sendMessage("2v2 --> 2 jogadores lutam entre si!");
             sender.sendMessage("4v4 --> 4 jogadores lutam entre si!");
             return true;
         }
@@ -49,10 +49,10 @@ public class Fight implements CommandExecutor {
             return false;
         }
 
-        if (args[0].equals("8v8")) {
+        if (args[0].equals("2v2")) {
             for (World mundo : Bukkit.getWorlds()) {
-                boolean is8v8BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + mundo.getName() + ".is8v8BattleStarted");
-                if (mundo.getName().startsWith("battle_8v8_") && !is8v8BattleStarted) {
+                boolean is2v2BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + mundo.getName() + ".is2v2BattleStarted");
+                if (mundo.getName().startsWith("battle_2v2_") && !is2v2BattleStarted) {
                     sender.sendMessage("Entrando em mundo já criado...");
                     Location playerSpawn = new Location(mundo, -32, 6, 32);
                     playerSender.teleport(playerSpawn);
@@ -60,9 +60,9 @@ public class Fight implements CommandExecutor {
                 }
             }
 
-            sender.sendMessage("Nenhum jogo encontrado, criando nova seção 8v8...");
+            sender.sendMessage("Nenhum jogo encontrado, criando nova seção 2v2...");
             String templateWorldName = "ilhas";
-            String newWorldName = "battle_8v8_" + System.currentTimeMillis();
+            String newWorldName = "battle_2v2_" + System.currentTimeMillis();
             sender.sendMessage("Criando mundo para entrar...");
 
             if (worldManager.cloneWorld(templateWorldName, newWorldName)) {
@@ -78,7 +78,7 @@ public class Fight implements CommandExecutor {
                 return true;
             }
 
-            sender.sendMessage("Erro ao clonar o mundo 8v8.");
+            sender.sendMessage("Erro ao clonar o mundo 2v2.");
             return false;
 
         } else if (args[0].equals("4v4")) {

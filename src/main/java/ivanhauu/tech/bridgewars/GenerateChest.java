@@ -1,4 +1,4 @@
-package ivanhauu.tech.battlesessions;
+package ivanhauu.tech.bridgewars;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -1,21 +1,21 @@
-package ivanhauu.tech.battlesessions.utils;
+package ivanhauu.tech.bridgewars.utils;
 
-import ivanhauu.tech.battlesessions.BattleSessions;
+import ivanhauu.tech.bridgewars.BridgeWars;
 import org.bukkit.entity.Player;
 
 public class GetPlayerRank {
 
-    private final BattleSessions plugin;
+    private final BridgeWars plugin;
 
-    public GetPlayerRank(BattleSessions plugin) {
+    public GetPlayerRank(BridgeWars plugin) {
         this.plugin = plugin;
     }
 
     public String getPlayerRank(Player player) {
         int wins4v4 = plugin.getPlayerConfig().getInt("players." + player.getName() + ".4v4wins");
-        int wins8v8 = 2 * plugin.getPlayerConfig().getInt("players." + player.getName() + ".8v8wins"); //As partidas 8v8 tem o dobro de pontuação!
+        int wins2v2 = 2 * plugin.getPlayerConfig().getInt("players." + player.getName() + ".2v2wins"); //As partidas 8v8 tem o dobro de pontuação!
 
-        int ptsTotal = wins4v4 + wins8v8;
+        int ptsTotal = wins4v4 + wins2v2;
 
         String rankPrefix = null;
 

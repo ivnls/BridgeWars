@@ -1,6 +1,6 @@
-package ivanhauu.tech.battlesessions.commands;
+package ivanhauu.tech.bridgewars.commands;
 
-import ivanhauu.tech.battlesessions.BattleSessions;
+import ivanhauu.tech.bridgewars.BridgeWars;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,9 +13,9 @@ import java.util.Set;
 
 public class Ptop implements CommandExecutor {
 
-    private final BattleSessions plugin;
+    private final BridgeWars plugin;
 
-    public Ptop(BattleSessions plugin) {
+    public Ptop(BridgeWars plugin) {
         this.plugin = plugin;
     }
 
@@ -47,8 +47,8 @@ public class Ptop implements CommandExecutor {
             return false;
         }
 
-        if (!(mode.equalsIgnoreCase("8v8") || mode.equalsIgnoreCase("4v4"))) {
-            sender.sendMessage("Modo de jogo inválido. Use '8v8' ou '4v4'.");
+        if (!(mode.equalsIgnoreCase("2v2") || mode.equalsIgnoreCase("4v4"))) {
+            sender.sendMessage("Modo de jogo inválido. Use '2v2' ou '4v4'.");
             return false;
         }
 
@@ -60,8 +60,8 @@ public class Ptop implements CommandExecutor {
         for (String player : players) {
             int wins = 0;
 
-            if (mode.equalsIgnoreCase("8v8")) {
-                wins = plugin.getPlayerConfig().getInt("players." + player + ".8v8wins");
+            if (mode.equalsIgnoreCase("2v2")) {
+                wins = plugin.getPlayerConfig().getInt("players." + player + ".2v2wins");
             } else if (mode.equalsIgnoreCase("4v4")) {
                 wins = plugin.getPlayerConfig().getInt("players." + player + ".4v4wins");
             }

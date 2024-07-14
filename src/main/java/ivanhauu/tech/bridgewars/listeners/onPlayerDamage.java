@@ -1,7 +1,7 @@
-package ivanhauu.tech.battlesessions.listeners;
+package ivanhauu.tech.bridgewars.listeners;
 
-import ivanhauu.tech.battlesessions.BattleSessions;
-import ivanhauu.tech.battlesessions.PlayerWinner;
+import ivanhauu.tech.bridgewars.BridgeWars;
+import ivanhauu.tech.bridgewars.PlayerWinner;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -11,10 +11,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class onPlayerDamage implements Listener {
 
-    private final BattleSessions plugin;
+    private final BridgeWars plugin;
     private final PlayerWinner playerWinner;
 
-    public onPlayerDamage(BattleSessions plugin, PlayerWinner playerWinner) {
+    public onPlayerDamage(BridgeWars plugin, PlayerWinner playerWinner) {
         this.plugin = plugin;
         this.playerWinner = playerWinner;
     }
@@ -25,7 +25,7 @@ public class onPlayerDamage implements Listener {
 
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (eventWorldName.startsWith("battle_4v4_") || eventWorldName.startsWith("battle_8v8_")) {
+            if (eventWorldName.startsWith("battle_4v4_") || eventWorldName.startsWith("battle_2v2_")) {
                 Location iSpawn = new Location(player.getWorld(), -32, 50, 32);
                 boolean is4v4BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + eventWorldName + ".is4v4BattleStarted");
 
@@ -42,7 +42,7 @@ public class onPlayerDamage implements Listener {
                     player.teleport(iSpawn);
                     player.setGameMode(GameMode.SPECTATOR);
                     player.sendTitle("§4Você morreu!","§4Assista a partida, ou saia com /spawn");
-                    playerWinner.playerWinner(player.getWorld(), player);
+                    playerWinner.playerWinner(player.getWorld(), false);
                 }
 
             }

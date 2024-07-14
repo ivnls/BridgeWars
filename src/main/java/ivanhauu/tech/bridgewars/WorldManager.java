@@ -1,4 +1,4 @@
-package ivanhauu.tech.battlesessions;
+package ivanhauu.tech.bridgewars;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -77,8 +77,8 @@ public class WorldManager {
     public void deleteWorldIfEmpty(String worldName) {
         World world = Bukkit.getWorld(worldName);
 
-        if (!worldName.startsWith("battle_8v8_") && !worldName.startsWith("battle_4v4_")) {
-            plugin.getLogger().info("O mundo " + worldName + " não corresponde ao padrão 'battle_8v8_' ou 'battle_4v4_'.");
+        if (!worldName.startsWith("battle_2v2_") && !worldName.startsWith("battle_4v4_")) {
+            plugin.getLogger().info("O mundo " + worldName + " não corresponde ao padrão 'battle_2v2_' ou 'battle_4v4_'.");
             return;
         }
 

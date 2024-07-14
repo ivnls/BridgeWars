@@ -1,4 +1,4 @@
-package ivanhauu.tech.battlesessions.commands;
+package ivanhauu.tech.bridgewars.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;

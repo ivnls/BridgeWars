@@ -1,4 +1,4 @@
-package ivanhauu.tech.battlesessions;
+package ivanhauu.tech.bridgewars;
 
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
@@ -8,16 +8,16 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 public class PlayerWinner {
 
-    private final BattleSessions plugin;
+    private final BridgeWars plugin;
     private final WorldManager worldManager;
 
-    public PlayerWinner(BattleSessions plugin, WorldManager worldManager) {
+    public PlayerWinner(BridgeWars plugin, WorldManager worldManager) {
         this.plugin = plugin;
         this.worldManager = worldManager;
     }
 
-    public void playerWinner(World world, Player player_killed) {
-        if (getAlivePlayers(world) == 1) {
+    public void playerWinner(World world, boolean pass_check) {
+        if (getAlivePlayers(world) == 1 || pass_check) {
             // player_killer.sendMessage("Você Ganhou a partida!");
             Player winner = null;
             for (Player p : world.getPlayers()) {
@@ -31,10 +31,10 @@ public class PlayerWinner {
             }
 
             if (winner != null) {
-                if (world.getName().startsWith("battle_8v8_")) {
-                    int currentWins = plugin.getPlayerConfig().getInt("players." + winner.getName() + ".8v8wins", 0);
+                if (world.getName().startsWith("battle_2v2_")) {
+                    int currentWins = plugin.getPlayerConfig().getInt("players." + winner.getName() + ".2v2wins", 0);
                     int newWins = currentWins + 1;
-                    plugin.getPlayerConfig().set("players." + winner.getName() + ".8v8wins", newWins);
+                    plugin.getPlayerConfig().set("players." + winner.getName() + ".2v2wins", newWins);
                     plugin.savePlayerConfig();
                 } else if (world.getName().startsWith("battle_4v4_")) {
                     int currentWins = plugin.getPlayerConfig().getInt("players." + winner.getName() + ".4v4wins", 0);
@@ -43,7 +43,6 @@ public class PlayerWinner {
                     plugin.savePlayerConfig();
                 }
 
-                player_killed.sendMessage("Teleportando em 5 segundos...");
                 Player finalWinner = winner;
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
                     Location spawn = new Location(Bukkit.getWorld("world"), 8, 0, 8);

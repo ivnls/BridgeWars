@@ -1,4 +1,4 @@
-package ivanhauu.tech.battlesessions.listeners;
+package ivanhauu.tech.bridgewars.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

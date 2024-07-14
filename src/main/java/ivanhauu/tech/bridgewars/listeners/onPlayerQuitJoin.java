@@ -1,8 +1,8 @@
-package ivanhauu.tech.battlesessions.listeners;
+package ivanhauu.tech.bridgewars.listeners;
 
-import ivanhauu.tech.battlesessions.BattleSessions;
-import ivanhauu.tech.battlesessions.WorldManager;
-import ivanhauu.tech.battlesessions.utils.GetPlayerRank;
+import ivanhauu.tech.bridgewars.BridgeWars;
+import ivanhauu.tech.bridgewars.WorldManager;
+import ivanhauu.tech.bridgewars.utils.GetPlayerRank;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -21,11 +21,11 @@ import static org.bukkit.Bukkit.getServer;
 
 public class onPlayerQuitJoin implements Listener {
 
-    private final BattleSessions plugin;
+    private final BridgeWars plugin;
     private final WorldManager worldManager;
     private final GetPlayerRank getPlayerRank;
 
-    public onPlayerQuitJoin(BattleSessions plugin, WorldManager worldManager, GetPlayerRank getPlayerRank) {
+    public onPlayerQuitJoin(BridgeWars plugin, WorldManager worldManager, GetPlayerRank getPlayerRank) {
         this.plugin = plugin;
         this.worldManager = worldManager;
         this.getPlayerRank = getPlayerRank;
@@ -37,7 +37,7 @@ public class onPlayerQuitJoin implements Listener {
         World mundo = player.getWorld();
         World spawn_world = Bukkit.getWorld("world");
 
-        if (mundo.getName().startsWith("battle_8v8_") || mundo.getName().startsWith("battle_4v4_")) {
+        if (mundo.getName().startsWith("battle_2v2_") || mundo.getName().startsWith("battle_4v4_")) {
             Location spawn = new Location(spawn_world, 8, 0, 8);
             player.teleport(spawn);
         }
@@ -68,11 +68,26 @@ public class onPlayerQuitJoin implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        plugin.updatePlayersVisualization(event.getPlayer());
-    }
+        Player player = event.getPlayer();
+        World event_world = player.getWorld();
 
-    @EventHandler
-    public void delEmptyWorlds(PlayerQuitEvent event) {
+        if (event_world.getName().startsWith("battle_4v4_") || event_world.getName().startsWith("battle_2v2_")) {
+            boolean is4v4BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + event_world.getName() + ".is4v4BattleStarted");
+            plugin.getLogger().info("1 O player ganhou pois só ele está no mundo!");
+            if (is4v4BattleStarted) {
+                plugin.getLogger().info("2 O player ganhou pois só ele está no mundo!");
+                if (event_world.getPlayers().size() <= 2) {
+                    for (Player p : event_world.getPlayers()) {
+                        if (p != player) {
+                            plugin.getPlayerWinner().playerWinner(event_world, true);
+                            plugin.getLogger().info("3 O player ganhou pois só ele está no mundo!");
+                        }
+                    }
+                }
+            }
+        }
+
+        plugin.updatePlayersVisualization(event.getPlayer());
         getServer().getScheduler().runTaskLater(plugin, () -> {
             for (World world : Bukkit.getWorlds()) {
                 worldManager.deleteWorldIfEmpty(world.getName());

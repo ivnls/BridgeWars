@@ -41,7 +41,7 @@ public class startBattle implements Listener {
         World toWorld = player.getWorld();
         plugin.updatePlayersVisualization(player);
 
-        if (toWorld.getPlayers().size() == 8 && toWorld.getName().startsWith("battle_2v2_")) {
+        if (toWorld.getPlayers().size() == 2 && toWorld.getName().startsWith("battle_2v2_")) {
 
             plugin.is2v2BattleStart(toWorld.getName(), true);
 
@@ -49,12 +49,15 @@ public class startBattle implements Listener {
             Scoreboard board = manager.getNewScoreboard();
 
             // Criar 8 equipes
-            for (int i = 1; i <= 8; i++) {
+            for (int i = 1; i <= 2; i++) {
                 Team team = board.registerNewTeam("GRUPO " + i);
                 team.setPrefix("GRUPO " + i + " ");
             }
 
-            //Possíveis localizações dos baús nas quatro ilhas
+            /*Possíveis localizações dos baús nas quatro ilhas
+
+            -----> FAZER A GERAÇÃO DE BAÚS DA PARTIDA 2V2 !!!!!! <-----
+
             List<Location> overworld = List.of(
                     new Location(toWorld, -6, 7, -12),
                     new Location(toWorld, -15, 6, -5),
@@ -113,6 +116,8 @@ public class startBattle implements Listener {
                 }
             }
 
+             */
+
             // Atribuir cada jogador a uma equipe
             int teamNumber = 1;
             for (Player p : toWorld.getPlayers()) {
@@ -121,7 +126,7 @@ public class startBattle implements Listener {
                 p.setScoreboard(board);
 
                 teamNumber++;
-                if (teamNumber > 8) {
+                if (teamNumber > 2) {
                     teamNumber = 1;
                 }
 
@@ -131,47 +136,19 @@ public class startBattle implements Listener {
 
                 int group = teamNumber;
 
+                Random rand = new Random();
+
                 //Localizações de spawn em batalhas 2v2
                 switch (group) {
                     case 1:
-                        x = 13;
+                        x = rand.nextInt(-65 - (-79) + 1) + (-79);
                         y = 6;
-                        z = 3;
+                        z = rand.nextInt(46 - 17 + 1) + 17;
                         break;
                     case 2:
-                        x = -14;
+                        x = rand.nextInt(14 - 0 + 1) + 0;
                         y = 6;
-                        z = -11;
-                        break;
-                    case 3:
-                        x = -51;
-                        y = 8;
-                        z = -14;
-                        break;
-                    case 4:
-                        x = -78;
-                        y = 18;
-                        z = 13;
-                        break;
-                    case 5:
-                        x = -52;
-                        y = 6;
-                        z = 52;
-                        break;
-                    case 6:
-                        x = -79;
-                        y = 6;
-                        z = 77;
-                        break;
-                    case 7:
-                        x = -14;
-                        y = 6;
-                        z = 70;
-                        break;
-                    case 8:
-                        x = 13;
-                        y = 12;
-                        z = 51;
+                        z = rand.nextInt(46 - 17 + 1) + 17;
                         break;
                 }
 
@@ -180,10 +157,94 @@ public class startBattle implements Listener {
                 p.teleport(location);
 
             }
+            plugin.isBattleStarting(toWorld.getName(), true);
+
+            BukkitTask task = new BukkitRunnable() {
+                int currentCount = 5;
+
+                @Override
+                public void run() {
+                    if (currentCount == 0) {
+                        for (Player p : toWorld.getPlayers()) {
+                            p.sendTitle("A partida começou!", "Boa sorte!");
+                            p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_BOTTLE_THROW, 10, 1);
+                            plugin.isBattleStarting(toWorld.getName(), false);
+                        }
+                        cancel();
+                    } else {
+                        plugin.isBattleStarting(toWorld.getName(), true);
+
+                        for (Player p : toWorld.getPlayers()) {
+                            p.sendTitle("A partida vai começar!", "em " + currentCount, 10, 70, 20);
+                            p.playSound(p.getLocation(), Sound.BLOCK_CRAFTER_CRAFT, 10, 1);
+                        }
+                        currentCount--;
+                    }
+                }
+            }.runTaskTimer(plugin, 0, 20L);
+
+            String schematicsFolder2v2 = "2v2";
+
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (toWorld.getPlayers().size() == 2) {
+                    for (Player p : toWorld.getPlayers()) {
+                        p.sendMessage("As pontes serão abertas!");
+                    }
+
+                    //Carregamento da schematic para a ponte
+
+                    Location explosion_location = new Location(toWorld, -32, 6, 32);
+
+                    //Pontes gpoint (Green Start Point)
+
+                    List<List<Integer>> listaPrincipal = new ArrayList<>();
+
+                    List<Integer> gpoint1 = new ArrayList<>();
+
+                    gpoint1.add(-15); // X
+                    gpoint1.add(6); //   Y
+                    gpoint1.add(18);//   Z
+
+                    listaPrincipal.add(gpoint1);
+
+                    List<Integer> gpoint2 = new ArrayList<>();
+
+                    gpoint2.add(-15);
+                    gpoint2.add(6);
+                    gpoint2.add(42);
+
+                    listaPrincipal.add(gpoint2);
+
+                    for (int i = 0; i <= 1; i++) {
+
+                        final int index = i;
+
+                        int x2v2 = listaPrincipal.get(i).get(0);
+                        int y2v2 = listaPrincipal.get(i).get(1);
+                        int z2v2 = listaPrincipal.get(i).get(2);
+
+                        int finalI = i + 1;
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+
+                            File bridgeSchematic = new File(plugin.getDataFolder() + "/schematics/" + schematicsFolder2v2 + "/" + "default_2v2" + ".schem");
+                            Clipboard clipboard = LoadSchematic.loadSchematic(bridgeSchematic);
+                            PasteSchematic.pasteSchematic(clipboard, toWorld, x2v2, y2v2, z2v2);
+
+                            toWorld.playSound(explosion_location, Sound.ENTITY_GENERIC_EXPLODE, 100, 100);
+                            for (Player p : toWorld.getPlayers()) {
+                                p.sendMessage(finalI + "º ponte aberta!");
+                            }
+
+                        }, index * 40L);
+                    }
+                }
+            }, 640L);
+
 
             for (Player p : toWorld.getPlayers()) {
                 p.sendMessage("A partida começou!");
             }
+
             // Deletar o prefixo do grupo ao jogador entrar no spawn
         } else if (toWorld.getName().equals("world")) {
             ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -191,7 +252,6 @@ public class startBattle implements Listener {
 
             player.setScoreboard(board);
 
-            //Batalha 4v4 --> EM DESENVOLVIMENTO!
         } else if (toWorld.getPlayers().size() == 4 && toWorld.getName().startsWith("battle_4v4_")) {
             plugin.is4v4BattleStart(toWorld.getName(), true);
 
@@ -256,8 +316,6 @@ public class startBattle implements Listener {
                     generateChest.generateChest(loc);
                 }
             }
-
-            //Refazer a lógica da contagem regressiva, primeiro teleportar os player as ilhas e então iniciar a contagem.
 
             int teamNumber = 1;
             for (Player p : toWorld.getPlayers()) {
@@ -326,7 +384,7 @@ public class startBattle implements Listener {
                 }
             }.runTaskTimer(plugin, 0, 20L);
 
-            String schematicsFolder = "standart";
+            String schematicsFolder4v4 = "4v4";
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 if (toWorld.getPlayers().size() == 4) {
@@ -385,7 +443,7 @@ public class startBattle implements Listener {
                         int finalI = i + 1;
                         Bukkit.getScheduler().runTaskLater(plugin, () -> {
 
-                            File bridgeSchematic = new File(plugin.getDataFolder() + "/schematics/" + schematicsFolder + "/" + finalI + ".schem");
+                            File bridgeSchematic = new File(plugin.getDataFolder() + "/schematics/" + schematicsFolder4v4 + "/" + finalI + ".schem");
                             Clipboard clipboard = LoadSchematic.loadSchematic(bridgeSchematic);
                             PasteSchematic.pasteSchematic(clipboard, toWorld, x4v4, y4v4, z4v4);
 

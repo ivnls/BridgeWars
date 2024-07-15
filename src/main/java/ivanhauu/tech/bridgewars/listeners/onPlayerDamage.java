@@ -27,10 +27,17 @@ public class onPlayerDamage implements Listener {
             Player player = (Player) event.getEntity();
             if (eventWorldName.startsWith("battle_4v4_") || eventWorldName.startsWith("battle_2v2_")) {
                 Location iSpawn = new Location(player.getWorld(), -32, 50, 32);
-                boolean is4v4BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + eventWorldName + ".is4v4BattleStarted");
 
-                if (!is4v4BattleStarted) {
-                    event.setCancelled(true);
+                if (eventWorldName.startsWith("battle_4v4_")) {
+                    boolean is4v4BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + eventWorldName + ".is4v4BattleStarted");
+                    if (!is4v4BattleStarted) {
+                        event.setCancelled(true);
+                    }
+                } else if (eventWorldName.startsWith("battle_2v2_")) {
+                    boolean is2v2BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + eventWorldName + ".is2v2BattleStarted");
+                    if (!is2v2BattleStarted) {
+                        event.setCancelled(true);
+                    }
                 }
 
                 if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {

@@ -61,7 +61,7 @@ public class Fight implements CommandExecutor {
             }
 
             sender.sendMessage("Nenhum jogo encontrado, criando nova seção 2v2...");
-            String templateWorldName = "ilhas";
+            String templateWorldName = "ilhas2v2";
             String newWorldName = "battle_2v2_" + System.currentTimeMillis();
             sender.sendMessage("Criando mundo para entrar...");
 
@@ -93,7 +93,7 @@ public class Fight implements CommandExecutor {
             }
 
             sender.sendMessage("Nenhum jogo encontrado, criando nova seção 4v4...");
-            String templateWorldName = "ilhas";
+            String templateWorldName = "ilhas4v4";
             String newWorldName = "battle_4v4_" + System.currentTimeMillis();
             sender.sendMessage("Criando mundo para entrar...");
 

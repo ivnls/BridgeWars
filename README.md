@@ -1,11 +1,11 @@
-<h1 align="center">BattleSessions</h1>
+<h1 align="center">BridgeWars</h1>
 
 <p align="center">
     <img src="images/bw-logo.png" alt="Logo" width="250"/>
 </p>
 
 <p align="center">
-    O plugin BattleSessions adiciona um novo minigame PvP onde os jogadores coletam recursos e lutam em ilhas conectadas por pontes geradas durante a partida.
+    O plugin BridgeWars adiciona um novo minigame PvP onde os jogadores coletam recursos e lutam em ilhas conectadas por pontes geradas durante a partida.
 </p>
 
 ## Funcionalidades

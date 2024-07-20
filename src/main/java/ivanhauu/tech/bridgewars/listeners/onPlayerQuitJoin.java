@@ -31,6 +31,13 @@ public class onPlayerQuitJoin implements Listener {
         this.getPlayerRank = getPlayerRank;
     }
 
+    Location pod1_4v4 = new Location(Bukkit.getWorld("world"), 8.5, 0, -12.5);
+    Location pod2_4v4 = new Location(Bukkit.getWorld("world"), 12.5, -1, -12.5);
+    Location pod3_4v4 = new Location(Bukkit.getWorld("world"), 4.5, -2, -12.5);
+    Location pod1_2v2 = new Location(Bukkit.getWorld("world"), 8.5, 0, 29.5);
+    Location pod2_2v2 = new Location(Bukkit.getWorld("world"), 12.5, -1, 29.5);
+    Location pod3_2v2 = new Location(Bukkit.getWorld("world"), 4.5, -2, 29.5);
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -46,6 +53,7 @@ public class onPlayerQuitJoin implements Listener {
             player.getInventory().clear();
             player.setHealth(20);
             player.setFoodLevel(20);
+            player.clearActivePotionEffects();
             player.setGameMode(GameMode.SURVIVAL);
         }
 
@@ -59,11 +67,17 @@ public class onPlayerQuitJoin implements Listener {
             }
         }
 
-        Location pod1 = new Location(spawn_world, 8.5, 0, -12.5);
-        Location pod2 = new Location(spawn_world, 12.5, -1, -12.5);
-        Location pod3 = new Location(spawn_world, 4.5, -2, -12.5);
+        if (spawn_world.getName().equals("world")) {
+            for (Entity e : spawn_world.getEntities()) {
+                if (e.getType().equals(EntityType.ARMOR_STAND)) {
+                    e.remove();
+                }
+            }
+        }
 
-        playerPodium(pod1, pod2, pod3);
+        playerPodium(pod1_4v4, pod2_4v4, pod3_4v4, "4v4");
+        playerPodium(pod1_2v2, pod2_2v2, pod3_2v2, "2v2");
+
     }
 
     @EventHandler
@@ -71,10 +85,24 @@ public class onPlayerQuitJoin implements Listener {
         Player player = event.getPlayer();
         World event_world = player.getWorld();
 
-        if (event_world.getName().startsWith("battle_4v4_") || event_world.getName().startsWith("battle_2v2_")) {
+        if (event_world.getName().startsWith("battle_4v4_")) {
             boolean is4v4BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + event_world.getName() + ".is4v4BattleStarted");
             plugin.getLogger().info("1 O player ganhou pois só ele está no mundo!");
             if (is4v4BattleStarted) {
+                plugin.getLogger().info("2 O player ganhou pois só ele está no mundo!");
+                if (event_world.getPlayers().size() <= 2) {
+                    for (Player p : event_world.getPlayers()) {
+                        if (p != player) {
+                            plugin.getPlayerWinner().playerWinner(event_world, true);
+                            plugin.getLogger().info("3 O player ganhou pois só ele está no mundo!");
+                        }
+                    }
+                }
+            }
+        } else if (event_world.getName().startsWith("battle_2v2_")) {
+            boolean is2v2BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + event_world.getName() + ".is2v2BattleStarted");
+            plugin.getLogger().info("1 O player ganhou pois só ele está no mundo!");
+            if (is2v2BattleStarted) {
                 plugin.getLogger().info("2 O player ganhou pois só ele está no mundo!");
                 if (event_world.getPlayers().size() <= 2) {
                     for (Player p : event_world.getPlayers()) {
@@ -93,9 +121,10 @@ public class onPlayerQuitJoin implements Listener {
                 worldManager.deleteWorldIfEmpty(world.getName());
             }
         }, 20L);
+
     }
 
-    public void playerPodium(Location pod1, Location pod2, Location pod3) {
+    public void playerPodium(Location pod1, Location pod2, Location pod3, String mode) {
 
         World world1 = pod1.getWorld();
 
@@ -107,7 +136,14 @@ public class onPlayerQuitJoin implements Listener {
 
         // Iterar sobre os jogadores e adicionar seus wins à lista
         for (String player : players) {
-            int wins = plugin.getPlayerConfig().getInt("players." + player + ".4v4wins");
+            int wins = 0;
+
+            if (mode == "4v4") {
+                wins = plugin.getPlayerConfig().getInt("players." + player + ".4v4wins");
+            } else if (mode == "2v2") {
+                wins = plugin.getPlayerConfig().getInt("players." + player + ".2v2wins");
+            }
+
             playerWins.add(new AbstractMap.SimpleEntry<>(player, wins));
         }
 
@@ -116,12 +152,6 @@ public class onPlayerQuitJoin implements Listener {
 
         // Pegar os top 3 jogadores
         List<Map.Entry<String, Integer>> topPlayers = playerWins.subList(0, Math.min(3, playerWins.size()));
-
-        for (Entity e : world1.getEntities()) {
-            if (e.getType().equals(EntityType.ARMOR_STAND)) {
-                e.remove();
-            }
-        }
 
         Location[] podiumLocations = { pod1, pod2, pod3 };
 
@@ -132,7 +162,12 @@ public class onPlayerQuitJoin implements Listener {
             ArmorStand armorStand = (ArmorStand) world1.spawnEntity(podiumLocations[i], EntityType.ARMOR_STAND);
             armorStand.setGravity(false);
             armorStand.setVisible(false);
-            armorStand.setRotation(0, 180);
+
+            if (mode.equals("4v4")) {
+                armorStand.setRotation(0, 0);
+            } else if (mode.equals("2v2")) {
+                armorStand.setRotation(180, 0);
+            }
 
             // Definir a cabeça do armor stand para a skin do jogador
             ItemStack skull = new ItemStack(Material.PLAYER_HEAD);

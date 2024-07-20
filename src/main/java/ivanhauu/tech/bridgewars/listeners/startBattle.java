@@ -1,11 +1,16 @@
 package ivanhauu.tech.bridgewars.listeners;
 
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.math.transform.AffineTransform;
+import com.sk89q.worldedit.math.transform.Transform;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import ivanhauu.tech.bridgewars.BridgeWars;
 import ivanhauu.tech.bridgewars.GenerateChest;
 import ivanhauu.tech.bridgewars.worldedit.LoadSchematic;
 import ivanhauu.tech.bridgewars.worldedit.PasteSchematic;
 import org.bukkit.*;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -183,62 +188,177 @@ public class startBattle implements Listener {
                 }
             }.runTaskTimer(plugin, 0, 20L);
 
-            String schematicsFolder2v2 = "2v2";
+            List<String> listCaos = new ArrayList<>();
+            listCaos.add("Creeper");
+            listCaos.add("Blaze");
+            listCaos.add("Wither_Skeleton");
+            listCaos.add("Zoglin");
+            listCaos.add("Magma_Cube");
 
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                if (toWorld.getPlayers().size() == 2) {
-                    for (Player p : toWorld.getPlayers()) {
-                        p.sendMessage("As pontes serão abertas!");
+            new BukkitRunnable() {
+                //pos3 = -32, 18, 28
+
+                int carac0 = 1;
+                int carac1 = 2;
+                int carac2 = 5;
+
+
+                @Override
+                public void run() {
+
+                    if (carac0 == 0 && carac1 == 0 && carac2 < 0) {
+                        cancel();
+                        return;
                     }
 
-                    //Carregamento da schematic para a ponte
+                    int oldnum0 = carac0 + 1;
+                    int oldnum1 = carac1 + 1;
 
-                    Location explosion_location = new Location(toWorld, -32, 6, 32);
+                    if (carac2 < 0) {
+                        carac1 --;
+                        carac2 = 9;
+                    }
 
-                    //Pontes gpoint (Green Start Point)
+                    if (carac1 < 0) {
+                        carac0 --;
+                        carac1 = 9;
+                    }
 
-                    List<List<Integer>> listaPrincipal = new ArrayList<>();
+                    if (carac0 != oldnum0) {
 
-                    List<Integer> gpoint1 = new ArrayList<>();
+                        File num0 = new File(plugin.getDataFolder() + "/numbers/num" + carac0 + ".schem");
+                        Clipboard clipboard = LoadSchematic.loadSchematic(num0, toWorld);
+                        Location pasteLocation1 = new Location(toWorld, -31, 18, 38);
+                        PasteSchematic.pasteSchematic(clipboard, pasteLocation1, false);
 
-                    gpoint1.add(-15); // X
-                    gpoint1.add(6); //   Y
-                    gpoint1.add(18);//   Z
+                        Location pasteLocation2 = new Location(toWorld, -34, 18, 25);
+                        PasteSchematic.pasteSchematic(clipboard, pasteLocation2, true);
 
-                    listaPrincipal.add(gpoint1);
+                    }
 
-                    List<Integer> gpoint2 = new ArrayList<>();
+                    if (carac1 != oldnum1) {
 
-                    gpoint2.add(-15);
-                    gpoint2.add(6);
-                    gpoint2.add(42);
+                        File num1 = new File(plugin.getDataFolder() + "/numbers/num" + carac1 + ".schem");
+                        Clipboard clipboard = LoadSchematic.loadSchematic(num1, toWorld);
+                        Location pasteLocation1 = new Location(toWorld, -31, 18, 33);
+                        PasteSchematic.pasteSchematic(clipboard, pasteLocation1, false);
 
-                    listaPrincipal.add(gpoint2);
+                        Location pasteLocation2 = new Location(toWorld, -34, 18, 30);
+                        PasteSchematic.pasteSchematic(clipboard, pasteLocation2, true);
 
-                    for (int i = 0; i <= 1; i++) {
+                    }
 
-                        final int index = i;
 
-                        int x2v2 = listaPrincipal.get(i).get(0);
-                        int y2v2 = listaPrincipal.get(i).get(1);
-                        int z2v2 = listaPrincipal.get(i).get(2);
+                    File num2 = new File(plugin.getDataFolder() + "/numbers/num" + carac2 + ".schem");
+                    Clipboard clipboard = LoadSchematic.loadSchematic(num2, toWorld);
 
-                        int finalI = i + 1;
-                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    Location pasteLocation1 = new Location(toWorld, -31, 18, 28);
+                    PasteSchematic.pasteSchematic(clipboard, pasteLocation1, false);
 
-                            File bridgeSchematic = new File(plugin.getDataFolder() + "/schematics/" + schematicsFolder2v2 + "/" + "default_2v2" + ".schem");
-                            Clipboard clipboard = LoadSchematic.loadSchematic(bridgeSchematic);
-                            PasteSchematic.pasteSchematic(clipboard, toWorld, x2v2, y2v2, z2v2);
+                    Location pasteLocation2 = new Location(toWorld, -34, 18, 35);
+                    PasteSchematic.pasteSchematic(clipboard, pasteLocation2, true);
 
-                            toWorld.playSound(explosion_location, Sound.ENTITY_GENERIC_EXPLODE, 100, 100);
+                    Location soundLoc = new Location(toWorld, -32, 18, 28);
+
+                    if (carac0 == 0 && carac1 == 0 && carac2 <=10 && carac2 != 0) {
+                        toWorld.playSound(soundLoc, Sound.BLOCK_NOTE_BLOCK_BASS, 10, 10);
+
+                    } else if (carac0 == 1 && carac1 == 0 && carac2 == 0) {
+
+                        if (toWorld.getPlayers().size() == 2) {
                             for (Player p : toWorld.getPlayers()) {
-                                p.sendMessage(finalI + "º ponte aberta!");
+                                p.sendMessage("As pontes serão abertas!");
                             }
 
-                        }, index * 40L);
+                            //Carregamento da schematic para a ponte
+
+                            Location explosion_location = new Location(toWorld, -32, 6, 32);
+
+                            //Pontes gpoint (Green Start Point)
+
+                            List<List<Integer>> listaPrincipal = new ArrayList<>();
+
+                            List<Integer> gpoint1 = new ArrayList<>();
+
+                            gpoint1.add(-15); // X
+                            gpoint1.add(6); //   Y
+                            gpoint1.add(18);//   Z
+
+                            listaPrincipal.add(gpoint1);
+
+                            List<Integer> gpoint2 = new ArrayList<>();
+
+                            gpoint2.add(-15);
+                            gpoint2.add(6);
+                            gpoint2.add(42);
+
+                            listaPrincipal.add(gpoint2);
+
+                            for (int i = 0; i <= 1; i++) {
+
+                                final int index = i;
+
+                                int x2v2 = listaPrincipal.get(i).get(0);
+                                int y2v2 = listaPrincipal.get(i).get(1);
+                                int z2v2 = listaPrincipal.get(i).get(2);
+
+                                int finalI = i + 1;
+                                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+
+                                    File bridgeSchematic = new File(plugin.getDataFolder() + "/schematics/2v2/" + "default_2v2" + ".schem");
+                                    Clipboard clipboardo = LoadSchematic.loadSchematic(bridgeSchematic, toWorld);
+                                    Location pasteLocation = new Location(toWorld, x2v2, y2v2, z2v2);
+                                    PasteSchematic.pasteSchematic(clipboardo, pasteLocation, false);
+
+
+                                    toWorld.playSound(explosion_location, Sound.ENTITY_GENERIC_EXPLODE, 100, 100);
+                                    for (Player p : toWorld.getPlayers()) {
+                                        p.sendMessage(finalI + "º ponte aberta!");
+                                    }
+
+                                }, index * 40L);
+                            }
+                        }
+
+                    } else if (carac0 == 0 && carac1 == 0 && carac2 == 0) {
+
+                        Collections.shuffle(listCaos);
+
+                        EntityType mobToSpawn = EntityType.valueOf(listCaos.get(0).toUpperCase());
+
+                        for (Player p : toWorld.getPlayers()) {
+                            p.sendTitle("O tempo acabou!", "§4Começando o modo caos! com " + listCaos.get(0));
+                        }
+
+                        Random rand = new Random();
+
+                        int contador = 40;
+
+                        while (contador >= 0) {
+
+                            int min1 = -80;
+                            int max1 = 15;
+
+                            int min2 = 16;
+                            int max2 = 47;
+
+                            int randomX = rand.nextInt((max1 - min1) + 1) + min1;
+                            int randomY = 26;
+                            int randomZ = rand.nextInt((max2 - min2) + 1) + min2;
+
+                            Location location = new Location(toWorld, randomX, randomY, randomZ);
+
+                            toWorld.spawnEntity(location, mobToSpawn);
+                            contador--;
+                        }
+
+
+                    } else {
+                        toWorld.playSound(soundLoc, Sound.BLOCK_IRON_TRAPDOOR_OPEN, 10, 10);
                     }
+                    carac2 --;
                 }
-            }, 640L);
+            }.runTaskTimer(plugin, 0, 20);
 
 
             for (Player p : toWorld.getPlayers()) {
@@ -443,9 +563,12 @@ public class startBattle implements Listener {
                         int finalI = i + 1;
                         Bukkit.getScheduler().runTaskLater(plugin, () -> {
 
+
                             File bridgeSchematic = new File(plugin.getDataFolder() + "/schematics/" + schematicsFolder4v4 + "/" + finalI + ".schem");
-                            Clipboard clipboard = LoadSchematic.loadSchematic(bridgeSchematic);
-                            PasteSchematic.pasteSchematic(clipboard, toWorld, x4v4, y4v4, z4v4);
+                            Clipboard clipboard = LoadSchematic.loadSchematic(bridgeSchematic, toWorld);
+                            Location pasteLocation = new Location(toWorld, x4v4, y4v4, z4v4);
+                            PasteSchematic.pasteSchematic(clipboard, pasteLocation, false);
+
 
                             toWorld.playSound(explosion_location, Sound.ENTITY_GENERIC_EXPLODE, 100, 100);
                             for (Player p : toWorld.getPlayers()) {

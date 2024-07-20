@@ -8,29 +8,44 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
 
-import org.bukkit.World;
+import com.sk89q.worldedit.world.World;
+import org.bukkit.Location;
 
 public class PasteSchematic {
 
-    public static void pasteSchematic(Clipboard clipboard, World world, int x, int y, int z) {
+    public static void pasteSchematic(Clipboard clipboard, Location location, boolean rotate180) {
+        World world = BukkitAdapter.adapt(location.getWorld());
+        EditSession editSession = WorldEdit.getInstance().newEditSession(world);
 
-        // Convertendo o mundo Bukkit para o WorldEdit
-        com.sk89q.worldedit.world.World weWorld = BukkitAdapter.adapt(world);
+        ClipboardHolder holder = new ClipboardHolder(clipboard);
 
-        try (EditSession editSession = WorldEdit.getInstance().newEditSession(weWorld)) {
+        if (rotate180) {
+            AffineTransform transform = new AffineTransform().rotateY(180);
+            holder.setTransform(holder.getTransform().combine(transform));
+        }
 
-            Operation operation = new ClipboardHolder(clipboard)
+        try {
+
+            Operation operation = holder
                     .createPaste(editSession)
-                    .to(BlockVector3.at(x, y, z))
-                    // configure here
+                    .to(BlockVector3.at(location.getX(), location.getY(), location.getZ()))
                     .build();
+
             Operations.complete(operation);
+            editSession.close();
+
         } catch (WorldEditException e) {
             throw new RuntimeException(e);
         }
 
     }
 
+
+
+
 }
+
+

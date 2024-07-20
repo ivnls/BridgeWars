@@ -14,7 +14,6 @@ public class playerMove implements Listener {
         this.plugin = plugin;
     }
 
-
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();

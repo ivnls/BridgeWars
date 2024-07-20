@@ -50,6 +50,7 @@ public class PlayerWinner {
                         p.getInventory().clear();
                         p.setHealth(20);
                         p.setFoodLevel(20);
+                        p.clearActivePotionEffects();
                         p.setGameMode(GameMode.SURVIVAL);
                         p.teleport(spawn);
                     }

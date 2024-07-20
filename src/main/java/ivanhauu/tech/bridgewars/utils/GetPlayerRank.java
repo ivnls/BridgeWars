@@ -26,9 +26,9 @@ public class GetPlayerRank {
         } else if (ptsTotal >= 30) {
             return "§b[★]"; //Rank PROFISSIONAL (★) 30 a 40
         } else if (ptsTotal >= 20) {
-            return "§e[♖]"; //Rank ENGAJADO (♖) 20 a 30
-        } else if (ptsTotal >= 10) {
             return "§4[♯]"; //Rank LUTADOR (♯) 10 a 20
+        } else if (ptsTotal >= 10) {
+            return "§e[♖]"; //Rank ENGAJADO (♖) 20 a 30
         } else if (ptsTotal >= 5) {
             return "§2[♤]"; //rank INICIANTE (♤) 5 a 10
         } else {

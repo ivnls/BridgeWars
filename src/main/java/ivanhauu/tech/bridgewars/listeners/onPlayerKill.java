@@ -6,11 +6,10 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class onPlayerKill implements Listener {
 
@@ -43,8 +42,8 @@ public class onPlayerKill implements Listener {
             for (Player p : event_world.getPlayers()) { p.sendMessage("O player " + player_killed.getName() + " foi de arrasta!"); }
 
                 //Para ambas as partidas quando sobrar 1 player no mundo, ele ganhará --> SEPARAR VITÓRIA 2v2 DE 4V4!
-            if (event.getEntity().getKiller() != null) {
-                plugin.getPlayerWinner().playerWinner(event_world, false);
+            if (event.getEntity().getKiller() != null || player_killed.getLastDamageCause() != null) {
+                playerWinner.playerWinner(event_world, false);
             }
 
         }

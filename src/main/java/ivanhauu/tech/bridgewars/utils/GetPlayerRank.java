@@ -17,8 +17,6 @@ public class GetPlayerRank {
 
         int ptsTotal = wins4v4 + wins2v2;
 
-        String rankPrefix = null;
-
         if (ptsTotal >= 50) {
             return "§6[♅]";
         } else if (ptsTotal >= 40) {

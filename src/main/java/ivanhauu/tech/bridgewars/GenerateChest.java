@@ -25,6 +25,7 @@ public class GenerateChest {
     // na lista chestItems.
     public void generateChest(Location location) {
         Block block = location.getBlock();
+
         block.setType(Material.CHEST);
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -61,12 +62,14 @@ public class GenerateChest {
                 //Lógica de geração de inventário aleatório para baú
                 int itemsPerChest = rand.nextInt(1, 8);
 
-                for (int i = 0; i < itemsPerChest; i++) {
+                int i = 0;
+                while (i < itemsPerChest) {
                     int slot = rand.nextInt(chest.getInventory().getSize());
 
                     if (chest.getInventory().getItem(slot) == null || chest.getInventory().getItem(slot).getType() == Material.AIR) {
                         int chestItemIndex = rand.nextInt(chestItems.size());
                         chest.getInventory().setItem(slot, chestItems.get(chestItemIndex));
+                        i++;
                     } else {
                         i--;
                     }

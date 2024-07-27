@@ -1,8 +1,6 @@
 package ivanhauu.tech.bridgewars.listeners;
 
 import ivanhauu.tech.bridgewars.BridgeWars;
-import ivanhauu.tech.bridgewars.WorldManager;
-import ivanhauu.tech.bridgewars.utils.GetPlayerRank;
 import org.bukkit.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -17,26 +15,22 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
 
-import static org.bukkit.Bukkit.getServer;
-
-public class onPlayerQuitJoin implements Listener {
+public class PlayerQuitJoin implements Listener {
 
     private final BridgeWars plugin;
-    private final WorldManager worldManager;
-    private final GetPlayerRank getPlayerRank;
 
-    public onPlayerQuitJoin(BridgeWars plugin, WorldManager worldManager, GetPlayerRank getPlayerRank) {
+    public PlayerQuitJoin(BridgeWars plugin) {
         this.plugin = plugin;
-        this.worldManager = worldManager;
-        this.getPlayerRank = getPlayerRank;
     }
 
-    Location pod1_4v4 = new Location(Bukkit.getWorld("world"), 8.5, 0, -12.5);
-    Location pod2_4v4 = new Location(Bukkit.getWorld("world"), 12.5, -1, -12.5);
-    Location pod3_4v4 = new Location(Bukkit.getWorld("world"), 4.5, -2, -12.5);
-    Location pod1_2v2 = new Location(Bukkit.getWorld("world"), 8.5, 0, 29.5);
-    Location pod2_2v2 = new Location(Bukkit.getWorld("world"), 12.5, -1, 29.5);
-    Location pod3_2v2 = new Location(Bukkit.getWorld("world"), 4.5, -2, 29.5);
+    String spawnWorld = "world";
+
+    Location pod1_4v4 = new Location(Bukkit.getWorld(spawnWorld), 8.5, 0, -12.5);
+    Location pod2_4v4 = new Location(Bukkit.getWorld(spawnWorld), 12.5, -1, -12.5);
+    Location pod3_4v4 = new Location(Bukkit.getWorld(spawnWorld), 4.5, -2, -12.5);
+    Location pod1_2v2 = new Location(Bukkit.getWorld(spawnWorld), 8.5, 0, 29.5);
+    Location pod2_2v2 = new Location(Bukkit.getWorld(spawnWorld), 12.5, -1, 29.5);
+    Location pod3_2v2 = new Location(Bukkit.getWorld(spawnWorld), 4.5, -2, 29.5);
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -44,7 +38,7 @@ public class onPlayerQuitJoin implements Listener {
         World mundo = player.getWorld();
         World spawn_world = Bukkit.getWorld("world");
 
-        if (mundo.getName().startsWith("battle_2v2_") || mundo.getName().startsWith("battle_4v4_")) {
+        if (mundo.getName().startsWith(plugin.getDataFolder() + "/sections/2v2/battle_2v2_") || mundo.getName().startsWith(plugin.getDataFolder() + "/sections/4v4/battle_4v4_")) {
             Location spawn = new Location(spawn_world, 8, 0, 8);
             player.teleport(spawn);
         }
@@ -55,17 +49,13 @@ public class onPlayerQuitJoin implements Listener {
             player.setFoodLevel(20);
             player.clearActivePotionEffects();
             player.setGameMode(GameMode.SURVIVAL);
+            Location spawn = new Location(spawn_world, 8, 0, 8);
+            player.teleport(spawn);
         }
 
         plugin.updatePlayersVisualization(player);
 
         event.setJoinMessage(null);
-
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (mundo == p.getWorld()) {
-                p.sendMessage(ChatColor.GREEN + player.getName() + " entrou no jogo!");
-            }
-        }
 
         if (spawn_world.getName().equals("world")) {
             for (Entity e : spawn_world.getEntities()) {
@@ -85,30 +75,28 @@ public class onPlayerQuitJoin implements Listener {
         Player player = event.getPlayer();
         World event_world = player.getWorld();
 
-        if (event_world.getName().startsWith("battle_4v4_")) {
+        event.setQuitMessage(null);
+
+        if (event_world.getName().startsWith(plugin.getDataFolder() + "/sections/4v4/battle_4v4_")) {
             boolean is4v4BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + event_world.getName() + ".is4v4BattleStarted");
-            plugin.getLogger().info("1 O player ganhou pois só ele está no mundo!");
             if (is4v4BattleStarted) {
-                plugin.getLogger().info("2 O player ganhou pois só ele está no mundo!");
                 if (event_world.getPlayers().size() <= 2) {
                     for (Player p : event_world.getPlayers()) {
                         if (p != player) {
                             plugin.getPlayerWinner().playerWinner(event_world, true);
-                            plugin.getLogger().info("3 O player ganhou pois só ele está no mundo!");
+                            plugin.getLogger().info("O player " + player.getName() + " ganhou pois só ele está no mundo!");
                         }
                     }
                 }
             }
-        } else if (event_world.getName().startsWith("battle_2v2_")) {
+        } else if (event_world.getName().startsWith(plugin.getDataFolder() + "/sections/2v2/battle_2v2_")) {
             boolean is2v2BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + event_world.getName() + ".is2v2BattleStarted");
-            plugin.getLogger().info("1 O player ganhou pois só ele está no mundo!");
             if (is2v2BattleStarted) {
-                plugin.getLogger().info("2 O player ganhou pois só ele está no mundo!");
                 if (event_world.getPlayers().size() <= 2) {
                     for (Player p : event_world.getPlayers()) {
                         if (p != player) {
                             plugin.getPlayerWinner().playerWinner(event_world, true);
-                            plugin.getLogger().info("3 O player ganhou pois só ele está no mundo!");
+                            plugin.getLogger().info("O player " + player.getName() + " ganhou pois só ele está no mundo!");
                         }
                     }
                 }
@@ -116,12 +104,6 @@ public class onPlayerQuitJoin implements Listener {
         }
 
         plugin.updatePlayersVisualization(event.getPlayer());
-        getServer().getScheduler().runTaskLater(plugin, () -> {
-            for (World world : Bukkit.getWorlds()) {
-                worldManager.deleteWorldIfEmpty(world.getName());
-            }
-        }, 20L);
-
     }
 
     public void playerPodium(Location pod1, Location pod2, Location pod3, String mode) {
@@ -129,6 +111,7 @@ public class onPlayerQuitJoin implements Listener {
         World world1 = pod1.getWorld();
 
         // Obter todos os jogadores do arquivo de configuração
+
         Set<String> players = plugin.getPlayerConfig().getConfigurationSection("players").getKeys(false);
 
         // Lista para armazenar jogadores e suas vitórias

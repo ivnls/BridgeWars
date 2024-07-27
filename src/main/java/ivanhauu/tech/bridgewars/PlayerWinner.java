@@ -1,6 +1,7 @@
 package ivanhauu.tech.bridgewars;
 
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -9,16 +10,14 @@ import org.bukkit.inventory.meta.FireworkMeta;
 public class PlayerWinner {
 
     private final BridgeWars plugin;
-    private final WorldManager worldManager;
 
-    public PlayerWinner(BridgeWars plugin, WorldManager worldManager) {
+    public PlayerWinner(BridgeWars plugin) {
         this.plugin = plugin;
-        this.worldManager = worldManager;
     }
 
     public void playerWinner(World world, boolean pass_check) {
         if (getAlivePlayers(world) == 1 || pass_check) {
-            // player_killer.sendMessage("Você Ganhou a partida!");
+
             Player winner = null;
             for (Player p : world.getPlayers()) {
                 if (!p.isDead() && p.getGameMode() == GameMode.SURVIVAL) {
@@ -31,16 +30,20 @@ public class PlayerWinner {
             }
 
             if (winner != null) {
-                if (world.getName().startsWith("battle_2v2_")) {
+                if (world.getName().startsWith(plugin.getDataFolder() + "/sections/2v2/battle_2v2_")) {
                     int currentWins = plugin.getPlayerConfig().getInt("players." + winner.getName() + ".2v2wins", 0);
                     int newWins = currentWins + 1;
                     plugin.getPlayerConfig().set("players." + winner.getName() + ".2v2wins", newWins);
                     plugin.savePlayerConfig();
-                } else if (world.getName().startsWith("battle_4v4_")) {
+                    plugin.is2v2BattleStart(world.getName(), false);
+                    plugin.isBattleStarting(world.getName(), false);
+                } else if (world.getName().startsWith(plugin.getDataFolder() + "/sections/4v4/battle_4v4_")) {
                     int currentWins = plugin.getPlayerConfig().getInt("players." + winner.getName() + ".4v4wins", 0);
                     int newWins = currentWins + 1;
                     plugin.getPlayerConfig().set("players." + winner.getName() + ".4v4wins", newWins);
                     plugin.savePlayerConfig();
+                    plugin.is4v4BattleStart(world.getName(), false);
+                    plugin.isBattleStarting(world.getName(), false);
                 }
 
                 Player finalWinner = winner;
@@ -57,10 +60,47 @@ public class PlayerWinner {
 
                 }, 80L);
 
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    plugin.getLogger().info("Mundo apagado, pois a partida acabou!");
-                    worldManager.deleteWorldIfEmpty(world.getName());
-                }, 100L);
+                if (world.getName().startsWith(plugin.getDataFolder() + "/sections/2v2/battle_2v2_")) {
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        for (Entity e : world.getEntities()) {
+                            e.remove();
+                        }
+
+                        Location corner01 = new Location(world, -16, 7, 42);
+                        Location corner02 = new Location(world, -49, 0, 45);
+
+                        Location corner11 = new Location(world, -16, 7, 18);
+                        Location corner12 = new Location(world, -49, 0, 21);
+
+                        plugin.setBlocksToAir(corner01, corner02);
+                        plugin.setBlocksToAir(corner11, corner12);
+                    }, 100L);
+                } else if (world.getName().startsWith(plugin.getDataFolder() + "/sections/4v4/battle_4v4_")) {
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        for (Entity e : world.getEntities()) {
+                            e.remove();
+                        }
+
+                        Location corner01 = new Location(world, -16, 7, -2);
+                        Location corner02 = new Location(world, -49, 0, 1);
+
+                        Location corner11 = new Location(world, -67, 7, 15);
+                        Location corner12 = new Location(world, -64, 0, 48);
+
+                        Location corner21 = new Location(world, -49, 7, 65);
+                        Location corner22 = new Location(world, -16, 0, 62);
+
+                        Location corner31 = new Location(world, 2, 7, 48);
+                        Location corner32 = new Location(world, -1, 0, 15);
+
+                        plugin.setBlocksToAir(corner01, corner02);
+                        plugin.setBlocksToAir(corner11, corner12);
+                        plugin.setBlocksToAir(corner21, corner22);
+                        plugin.setBlocksToAir(corner31, corner32);
+
+                    }, 100L);
+                }
+
             }
         } else {
             plugin.getLogger().info("Ninguém ganhou ainda!");

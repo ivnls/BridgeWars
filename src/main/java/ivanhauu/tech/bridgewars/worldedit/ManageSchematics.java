@@ -5,16 +5,37 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.session.ClipboardHolder;
-
 import com.sk89q.worldedit.world.World;
 import org.bukkit.Location;
 
-public class PasteSchematic {
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+public class ManageSchematics {
+
+    public static Clipboard loadSchematic(File file) {
+        Clipboard clipboard = null;
+
+        try (FileInputStream fis = new FileInputStream(file);
+             ClipboardReader reader = ClipboardFormats.findByFile(file).getReader(fis)) {
+            clipboard = reader.read();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return clipboard;
+    }
 
     public static void pasteSchematic(Clipboard clipboard, Location location, boolean rotate180) {
         World world = BukkitAdapter.adapt(location.getWorld());
@@ -38,14 +59,8 @@ public class PasteSchematic {
             editSession.close();
 
         } catch (WorldEditException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     }
-
-
-
-
 }
-
-

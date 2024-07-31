@@ -17,19 +17,24 @@
 ## Screenshots
 
 ![App Screenshot](images/1.png)
-![App Screenshot](images/2.png)
+![App Screenshot](images/14.png)
 ![App Screenshot](images/5.png)
+![App Screenshot](images/16.png)
+![App Screenshot](images/8.png)
+![App Screenshot](images/13.png)
 
 
-## Rodando os testes
 
+## SERVER OFICIAL (BEDROCK E JAVA EDITION):
 
-```bash
-  
-```
+- bw.ivanhauu.tech
 
+## Discord:
 
-## Autores
+- https://discord.gg/NCsG2ufhDc
+
+## Autores do Plugin e Servidor:
 
 - [@ivnls](https://www.github.com/ivnls)
+- [@20come70corr3](https://www.github.com/20come70corr3)
 

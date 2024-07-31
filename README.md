@@ -4,7 +4,7 @@
     <img src="images/bw-logo.png" alt="Logo" width="250"/>
 </p>
 
-[![Discord](https://img.shields.io/discord/345628548716822530.svg?color=7289DA&style=for-the-badge&logo=discord)](https://discord.gg/NCsG2ufhDc)
+[![Discord](https://img.shields.io/badge/Discord-1234?color=424242&style=for-the-badge&logo=discord)](https://discord.gg/NCsG2ufhDc)
 
 <p align="center">
     O projeto Bridge Wars visa criar um modo de jogo completo e otimizado, jogadores lutarão entre si em ilhas voadoras conectadas por pontes que serão geradas em um momento da partida.

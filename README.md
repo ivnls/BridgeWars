@@ -4,8 +4,11 @@
     <img src="images/bw-logo.png" alt="Logo" width="250"/>
 </p>
 
+[Discord](https://img.shields.io/discord/345628548716822530.svg?color=7289DA&style=for-the-badge&logo=discord)(https://discord.gg/NCsG2ufhDc)
+
 <p align="center">
-    O plugin BridgeWars adiciona um novo minigame PvP onde os jogadores coletam recursos e lutam em ilhas conectadas por pontes geradas durante a partida.
+    O projeto Bridge Wars visa criar um modo de jogo completo e otimizado, jogadores lutarão entre si em ilhas voadoras conectadas por pontes que serão geradas em um momento da partida.
+    Por enquanto o sistema de ranks é bem simples, são 7 ranks com a pontuação definida com o número de vitórias em ambos os modos de jogo.
 </p>
 
 ## Funcionalidades
@@ -29,12 +32,12 @@
 
 - bw.ivanhauu.tech
 
-## Discord:
-
-- https://discord.gg/NCsG2ufhDc
-
 ## Autores do Plugin e Servidor:
 
-- [@ivnls](https://www.github.com/ivnls)
-- [@20come70corr3](https://www.github.com/20come70corr3)
+<a href="https://www.github.com/ivnls">
+    <img src="https://avatars.githubusercontent.com/u/165328590?s=400&u=344fe74461cdc9181478dfa7ae674ed5274a77fe&v=4" width="100" alt="ivnls" />
+</a>
+<a href="https://www.github.com/20come70corr3">
+    <img src="https://avatars.githubusercontent.com/u/142798610?v=4" width="100" alt="20come70corr3" />
+</a>
 

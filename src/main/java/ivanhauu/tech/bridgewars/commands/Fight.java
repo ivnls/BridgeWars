@@ -22,12 +22,12 @@ public class Fight implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Este comando só pode ser executado por um player!");
+            sender.sendMessage("§6[BW-INFO] §cEste comando só pode ser executado por um player!");
             return false;
         }
 
         if (args.length != 1) {
-            sender.sendMessage("Use '/fight list' para ver os modos de jogo disponíveis!");
+            sender.sendMessage("§6[BW-INFO] §bUse '/fight list' para ver os modos de jogo disponíveis!");
             return false;
         }
 
@@ -35,7 +35,7 @@ public class Fight implements CommandExecutor {
         World spawn = Bukkit.getWorld("world");
 
         if (spawn == null || playerSender.getWorld() != spawn) {
-            playerSender.sendMessage("Você só pode executar este comando no spawn!");
+            playerSender.sendMessage("§6[BW-INFO] §cVocê só pode executar este comando no spawn!");
             return false;
         }
 
@@ -50,7 +50,7 @@ public class Fight implements CommandExecutor {
                 sender.sendMessage("4v4 --> 4 jogadores lutam entre si!");
                 return true;
             default:
-                sender.sendMessage("Modo de jogo não encontrado, use '/fight list' para ver os modos de jogo!");
+                sender.sendMessage("§6[BW-INFO] §cModo de jogo "+ args[0] +" não encontrado, use '/fight list' para ver os modos de jogo!");
                 return false;
         }
 

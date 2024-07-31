@@ -38,7 +38,7 @@ public class PlayerDeath implements Listener {
             playerKilled.sendTitle("§4Você morreu!","§4Assista a partida, ou saia com /spawn");
             playerKilled.setGameMode(GameMode.SPECTATOR);
 
-            for (Player p : eventWorld.getPlayers()) { p.sendMessage("O player " + playerKilled.getName() + " foi de arrasta!"); }
+            for (Player p : eventWorld.getPlayers()) { p.sendMessage(Color.RED + "O player " + playerKilled.getName() + " foi de arrasta!"); }
 
                 //Para ambas as partidas quando sobrar 1 player no mundo, ele ganhará --> SEPARAR VITÓRIA 2v2 DE 4V4!
             if (event.getEntity().getKiller() != null || playerKilled.getLastDamageCause() != null) {

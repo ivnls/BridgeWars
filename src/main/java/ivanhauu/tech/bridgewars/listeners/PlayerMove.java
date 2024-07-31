@@ -22,7 +22,7 @@ public class PlayerMove implements Listener {
         if (eventWorldName.startsWith(plugin.getDataFolder() + "/sections/2v2/battle_2v2_") || eventWorldName.startsWith(plugin.getDataFolder() + "/sections/4v4/battle_4v4_")) {
             boolean isBattleStarting = plugin.getBattleConfig().getBoolean("worlds." + eventWorldName + ".isBattleStarting");
             if (isBattleStarting) {
-                player.sendMessage("A partida está iniciando, você não pode se mover!");
+                player.sendMessage("§6[BW-INFO] §cA partida está iniciando, você não pode se mover!");
                 event.setCancelled(true);
             }
         }

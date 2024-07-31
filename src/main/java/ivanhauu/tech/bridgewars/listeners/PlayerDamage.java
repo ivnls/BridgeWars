@@ -2,6 +2,7 @@ package ivanhauu.tech.bridgewars.listeners;
 
 import ivanhauu.tech.bridgewars.BridgeWars;
 import ivanhauu.tech.bridgewars.PlayerWinner;
+import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -46,7 +47,7 @@ public class PlayerDamage implements Listener {
             if (event.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 if (player.getGameMode() != GameMode.SPECTATOR) {
                     for (Player p : player.getWorld().getPlayers()) {
-                        p.sendMessage("O player " + player.getName() + " foi de arrasta!");
+                        p.sendMessage(Color.RED + "O player " + player.getName() + " foi de arrasta!");
                     }
                 }
                 player.teleport(iSpawn);

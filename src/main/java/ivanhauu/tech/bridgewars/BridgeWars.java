@@ -29,7 +29,6 @@ public final class BridgeWars extends JavaPlugin {
     private PlayerWinner playerWinner;
     private JoinSession joinSession;
 
-    private PlayerAdvancement playerAdvancement;
     private PlayerDamage playerDamage;
     private PlayerDeath playerDeath;
     private PlayerQuitJoin playerQuitJoin;
@@ -52,7 +51,6 @@ public final class BridgeWars extends JavaPlugin {
         getPlayerRank = new GetPlayerRank(this);
         joinSession = new JoinSession(this);
 
-        playerAdvancement = new PlayerAdvancement();
         playerChat = new PlayerChat(getPlayerRank);
         playerDamage = new PlayerDamage(this, playerWinner);
         playerDeath = new PlayerDeath(this, playerWinner);
@@ -61,7 +59,6 @@ public final class BridgeWars extends JavaPlugin {
         startBattle = new StartBattle(this, generateChest);
 
         //Registradores de eventos
-        getServer().getPluginManager().registerEvents(playerAdvancement, this);
         getServer().getPluginManager().registerEvents(playerChat, this);
         getServer().getPluginManager().registerEvents(playerDamage, this);
         getServer().getPluginManager().registerEvents(playerDeath, this);
@@ -74,7 +71,7 @@ public final class BridgeWars extends JavaPlugin {
 
         // Executors dos comandos:
         getCommand("fight").setExecutor(new Fight(joinSession));
-        getCommand("spawn").setExecutor(new Spawn());
+        getCommand("spawn").setExecutor(new Spawn(this));
         getCommand("ptop").setExecutor(new Ptop(this));
 
         //Carregando as sections
@@ -270,6 +267,7 @@ public final class BridgeWars extends JavaPlugin {
 
             regionManager.addRegion(region);
         }
+
     }
 
 }

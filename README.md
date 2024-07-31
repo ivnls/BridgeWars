@@ -4,10 +4,6 @@
     <img src="images/bw-logo.png" alt="Logo" width="250"/>
 </p>
 
-
-[![Discord](https://img.shields.io/badge/Discord-1234?color=424242&style=for-the-badge&logo=discord)](https://discord.gg/NCsG2ufhDc)
-
-
 <p align="center">
     O projeto Bridge Wars visa criar um modo de jogo completo e otimizado, jogadores lutarão entre si em ilhas voadoras conectadas por pontes que serão geradas em um momento da partida.
     Por enquanto o sistema de ranks é bem simples, são 7 ranks com a pontuação definida com o número de vitórias em ambos os modos de jogo.
@@ -33,6 +29,8 @@
 ## SERVER OFICIAL (BEDROCK E JAVA EDITION):
 
 - bw.ivanhauu.tech
+
+[![Discord](https://img.shields.io/badge/Discord-1234?color=424242&style=for-the-badge&logo=discord)](https://discord.gg/NCsG2ufhDc)
 
 ## Autores do Plugin e Servidor:
 

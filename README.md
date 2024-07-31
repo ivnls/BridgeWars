@@ -4,7 +4,9 @@
     <img src="images/bw-logo.png" alt="Logo" width="250"/>
 </p>
 
-[![Discord](https://img.shields.io/badge/Discord-1234?color=424242&style=for-the-badge&logo=discord)](https://discord.gg/NCsG2ufhDc)
+<div align="center">
+    [![Discord](https://img.shields.io/badge/Discord-1234?color=424242&style=for-the-badge&logo=discord)](https://discord.gg/NCsG2ufhDc)
+</div>
 
 <p align="center">
     O projeto Bridge Wars visa criar um modo de jogo completo e otimizado, jogadores lutarão entre si em ilhas voadoras conectadas por pontes que serão geradas em um momento da partida.
@@ -34,10 +36,9 @@
 
 ## Autores do Plugin e Servidor:
 
-<a style="border-radius: 50%;" href="https://www.github.com/ivnls">
-    <img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/165328590?s=400&u=344fe74461cdc9181478dfa7ae674ed5274a77fe&v=4" width="100" alt="ivnls" />
+<a href="https://www.github.com/ivnls">
+    <img border-radius="50%" src="https://avatars.githubusercontent.com/u/165328590?s=400&u=344fe74461cdc9181478dfa7ae674ed5274a77fe&v=4" width="100" alt="ivnls" />
 </a>
-<a style="border-radius: 50%;" href="https://www.github.com/20come70corr3">
-    <img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/142798610?v=4" width="100" alt="20come70corr3" />
+<a href="https://www.github.com/20come70corr3">
+    <img border-radius="50%" src="https://avatars.githubusercontent.com/u/142798610?v=4" width="100" alt="20come70corr3" />
 </a>
-

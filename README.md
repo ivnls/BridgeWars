@@ -26,7 +26,7 @@
 
 
 
-## SERVER OFICIAL (BEDROCK E JAVA EDITION):
+## SERVIDOR OFICIAL (BEDROCK E JAVA EDITION): *Abriremos dia 04/08/24 12:30
 
 - bw.ivanhauu.tech
 

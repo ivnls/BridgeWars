@@ -15,9 +15,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GenerateChest {
 
-    private final JavaPlugin plugin;
+    private final BridgeWars plugin;
 
-    public GenerateChest(JavaPlugin plugin) {
+    public GenerateChest(BridgeWars plugin) {
         this.plugin = plugin;
     }
 
@@ -63,16 +63,17 @@ public class GenerateChest {
                 int itemsPerChest = rand.nextInt(1, 8);
 
                 int i = 0;
+                int totalSlots = chest.getInventory().getSize();
                 while (i < itemsPerChest) {
-                    int slot = rand.nextInt(chest.getInventory().getSize());
+                    int slot = rand.nextInt(totalSlots);
+                    ItemStack item = chest.getInventory().getItem(slot);
 
-                    if (chest.getInventory().getItem(slot) == null || chest.getInventory().getItem(slot).getType() == Material.AIR) {
+                    if (item == null || item.getType() == Material.AIR) {
                         int chestItemIndex = rand.nextInt(chestItems.size());
                         chest.getInventory().setItem(slot, chestItems.get(chestItemIndex));
                         i++;
-                    } else {
-                        i--;
                     }
+
                 }
 
             }

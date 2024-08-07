@@ -10,3 +10,7 @@ commands:
     description: Vá ao Spawn!
   ptop:
     description: Os melhores players!
+  battles:
+    description: Partidas em andamento!
+  Spectate:
+    description: Assista á partidas!

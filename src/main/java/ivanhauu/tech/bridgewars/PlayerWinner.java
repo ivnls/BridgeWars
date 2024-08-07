@@ -17,7 +17,6 @@ public class PlayerWinner {
 
     public void playerWinner(World world, boolean pass_check) {
         if (getAlivePlayers(world) == 1 || pass_check) {
-
             Player winner = null;
             for (Player p : world.getPlayers()) {
                 if (!p.isDead() && p.getGameMode() == GameMode.SURVIVAL) {
@@ -26,8 +25,11 @@ public class PlayerWinner {
                     p.sendTitle("§2Você Ganhou a partida!", "");
                     spawnFirework(world, winner_loc);
                     winner = p;
+                    break;
                 }
             }
+
+            plugin.getLogger().info("winner: " + winner.getName());
 
             if (winner != null) {
                 if (world.getName().startsWith(plugin.getDataFolder() + "/sections/2v2/battle_2v2_")) {
@@ -108,14 +110,22 @@ public class PlayerWinner {
     }
 
     public int getAlivePlayers(World world) {
+        if (world == null) {
+            plugin.getLogger().warning("World is null, cannot count alive players.");
+            return 0;
+        }
+
         int aliveCount = 0;
         for (Player player : world.getPlayers()) {
-            if (!player.isDead() && player.getGameMode() == GameMode.SURVIVAL) {
+            if (player != null && !player.isDead() && player.getGameMode() == GameMode.SURVIVAL) {
                 aliveCount++;
             }
         }
+
+        plugin.getLogger().info("Há " + aliveCount + " players vivos!");
         return aliveCount;
     }
+
 
     public void spawnFirework(World world, Location location) {
         // Cria a entidade do foguete na localização especificada

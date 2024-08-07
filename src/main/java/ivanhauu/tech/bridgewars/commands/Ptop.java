@@ -22,11 +22,6 @@ public class Ptop implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Este comando só pode ser executado por um jogador!");
-            return false;
-        }
-
         if (args.length != 2) {
             sender.sendMessage("Uso do comando: /ptop <modo de jogo> <quantidade de players>");
             return false;

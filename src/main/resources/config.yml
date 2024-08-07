@@ -1,0 +1,149 @@
+# ***************Ainda não está funcionando por completo*********************
+# ***Ainda para fazer a documentação!***
+
+# Aqui estão as principais variáveis do plugin Bridge Wars, ainda não é
+# muito customizavél, mas iremos acrescentando ao longo do desenvolvimento
+
+# *Recomendamos o uso do WorldEdit para pegar as coordenadas de configuração.
+
+geral:
+  spawn-world: "world"
+  ranks-prefix:
+    - "§6[♅]"
+    - "§9[☉]"
+    - "§b[★]"
+    - "§4[♯]"
+    - "§e[♖]"
+    - "§2[♤]"
+    - "§7[D]"
+
+podium:
+  # Aqui estão as localizações do pódio, você pode posicionar onde quizer no seu spawn.
+  player-first-4v4:
+    - 8.5
+    - 0
+    - -12.5
+  player-second-4v4:
+    - 12.5
+    - -1
+    - -12.5
+  player-third-4v4:
+    - 4.5
+    - -2
+    - -12.5
+  player-first-2v2:
+    - 8.5
+    - 0
+    - 29.5
+  player-second-2v2:
+    - 12.5
+    - -1
+    - 29.5
+  player-third-2v2:
+    - 4.5
+    - -2
+    - 29.5
+
+# Variáveis do Chat:
+chat:
+  server-prefix: "§6[BW-INFO]"
+  join-messages: false
+  quit-messages: false
+
+# Schematics das pontes geradas na partida
+schematics:
+  schematics-base-folder: "/schematics"
+  schematics-2v2-subfodler: "/2v2"
+  schematics-4v4-subfolder: "/4v4"
+
+  schematic2v2-template-name: "/default_2v2.schem"
+  # As schematics 4v4 são representadas por números 1.schem, 2.schem, ...
+  schematic4v4-template-name: "/"
+
+# Ativar ou desativar os modos de jogo
+battle-modes:
+  allow-2v2: true
+  allow-4v4: true
+  allow-spectate-command: true
+
+battle-worlds:
+  # Nota, o diretório /sections precisa estar dentro da pasta do plugin Bridge Wars (A mesma deste arquivo).
+  # *Siga a documentação no github para montar o seu diretório com os seus próprios mundos.
+  sections-base-folder: "/sections"
+  sections-2v2-subfolder: "/2v2"
+  sections-4v4-subfolder: "/4v4"
+
+  # Não Alterar! Em desenvolvimento
+  battle2v2-template-name: "/battle_2v2_"
+  battle4v4-template-name: "/battle_4v4_"
+
+  # A exibição relógio é desativado por padrão, ainda está senso desenvolvido!
+  activate-clock-2v2: false
+
+# Não funcionando!
+battle-configs:
+  battle-configs: 5
+  2v2:
+    group-prefix: "GRUPO"
+    clock-time: 125
+    gpoint1:
+      - -15
+      - 6
+      - 18
+    gpoint2:
+      - -15
+      - 6
+      - 42
+
+    items-per-player:
+      - NETHERITE_HELMET
+      - NETHERITE_CHESTPLATE
+      - NETHERITE_LEGGINGS
+      - NETHERITE_BOOTS
+      - GOLDEN_APPLE
+      - WIND_CHARGE
+      - BOW
+      - DIAMOND_SWORD
+      - MACE
+      - SPECTRAL_ARROW
+
+  4v4:
+    group-prefix: "GRUPO"
+    gpoint1:
+      - -15
+      - 6
+      - -2
+    gpoint2:
+      - -67
+      - 6
+      - 14
+    gpoint3:
+      - -50
+      - 6
+      - 65
+    gpoint4:
+      - 2
+      - 6
+      - 49
+
+    items-in-chest:
+      - STONE_AXE
+      - SHIELD
+      - LEATHER_CHESTPLATE
+      - LEATHER_LEGGINGS
+      - IRON_HELMET
+      - IRON_BOOTS
+      - CHAINMAIL_HELMET
+      - CHAINMAIL_BOOTS
+      - CHAINMAIL_CHESTPLATE
+      - CHAINMAIL_LEGGINGS
+      - CROSSBOW
+      - ARROW
+      - SNOWBALL
+      - TRIDENT
+      - STONE_SWORD
+      - GOLDEN_AXE
+      - GOLDEN_SWORD
+      - GOLDEN_HELMET
+      - GOLDEN_BOOTS
+      - BREAD

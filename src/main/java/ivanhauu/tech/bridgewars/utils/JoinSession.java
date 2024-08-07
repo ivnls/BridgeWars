@@ -21,7 +21,7 @@ public class JoinSession {
             if (mundo.getName().startsWith(plugin.getDataFolder() + "/sections/"+ mode +"/battle_"+ mode +"_")) {
                 boolean isBattleStarted = plugin.getBattleConfig().getBoolean("worlds." + mundo.getName() + ".is"+ mode +"BattleStarted");
                 if (!isBattleStarted) {
-                    player.sendMessage("§6[BW-INFO] §6Entrando na partida " + mode + "...");
+                    player.sendMessage(plugin.getServerPrefix() + "§cEntrando na partida " + mode + "...");
                     Location playerSpawn = new Location(mundo, -32, 6, 32);
                     player.teleport(playerSpawn);
                     return;
@@ -29,6 +29,6 @@ public class JoinSession {
             }
         }
 
-        player.sendMessage("§6[BW-INFO] §cTodas as partidas "+ mode +" estão lotadas!");
+        player.sendMessage(plugin.getServerPrefix() + "§cTodas as partidas "+ mode +" estão lotadas!");
     }
 }

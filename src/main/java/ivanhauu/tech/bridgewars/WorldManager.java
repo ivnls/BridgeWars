@@ -5,9 +5,9 @@ import org.bukkit.WorldCreator;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class WorldManager {
-    private final JavaPlugin plugin;
+    private final BridgeWars plugin;
 
-    public WorldManager(JavaPlugin plugin) {
+    public WorldManager(BridgeWars plugin) {
         this.plugin = plugin;
     }
 

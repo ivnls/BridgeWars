@@ -7,7 +7,6 @@ import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import ivanhauu.tech.bridgewars.commands.*;
 import ivanhauu.tech.bridgewars.listeners.*;
@@ -20,6 +19,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public final class BridgeWars extends JavaPlugin {
 
@@ -41,9 +41,48 @@ public final class BridgeWars extends JavaPlugin {
     private File playerFile;
     private FileConfiguration playerConfig;
 
+    private String spawnWorld;
+    private String sectionsBaseFolder;
+    private String subfolder2v2;
+    private String subfolder4v4;
+    private String battleWorldName2v2;
+    private String battleWorldName4v4;
+    private String schemBaseFolder;
+    private String schemSub2v2;
+    private String schemSub4v4;
+    private String TemName2v2;
+    private String TemName4v4;
+    private String group2v2Prefix;
+    private String group4v4Prefix;
+    private int clockTime2v2;
+    private boolean allow2v2;
+    private boolean allow4v4;
+    private int battleStartingTime;
+    /*
+    private boolean allowClock2v2;
+    private boolean joinMessages;
+    private boolean quitMessages;
+    private boolean allowSpectateCommand;
+
+     */
+    private String serverPrefix;
+    private List<String> ranksPrefix;
+    private List<Double> playerF2v2;
+    private List<Double> playerS2v2;
+    private List<Double> playerT2v2;
+    private List<Double> playerF4v4;
+    private List<Double> playerS4v4;
+    private List<Double> playerT4v4;
+
     @Override
     public void onEnable() {
         getLogger().info("O plugin BridgeWars foi iniciado!");
+
+        saveResource("config.yml", false);
+        saveDefaultConfig();
+        loadConfigurations();
+        createBattleConfig();
+        createPlayerConfig();
 
         worldManager = new WorldManager(this);
         playerWinner = new PlayerWinner(this);
@@ -55,7 +94,7 @@ public final class BridgeWars extends JavaPlugin {
         playerDamage = new PlayerDamage(this, playerWinner);
         playerDeath = new PlayerDeath(this, playerWinner);
         playerMove = new PlayerMove(this);
-        playerQuitJoin = new PlayerQuitJoin(this);
+        playerQuitJoin = new PlayerQuitJoin(this, playerWinner);
         startBattle = new StartBattle(this, generateChest);
 
         //Registradores de eventos
@@ -66,18 +105,15 @@ public final class BridgeWars extends JavaPlugin {
         getServer().getPluginManager().registerEvents(playerQuitJoin, this);
         getServer().getPluginManager().registerEvents(startBattle, this);
 
-        createBattleConfig();
-        createPlayerConfig();
-
         // Executors dos comandos:
-        getCommand("fight").setExecutor(new Fight(joinSession));
+        getCommand("fight").setExecutor(new Fight(joinSession, this));
         getCommand("spawn").setExecutor(new Spawn(this));
         getCommand("ptop").setExecutor(new Ptop(this));
+        getCommand("battles").setExecutor(new Battles(this));
+        getCommand("spectate").setExecutor(new Spectate(this));
 
         //Carregando as sections
         Bukkit.getConsoleSender().sendMessage("§6[INICIANDO O CARREGAMENTO DAS SECTIONS]");
-
-        protectWorld(Bukkit.getWorld("world"));
 
         for (int i = 0; i <= 9; i++) {
             String worldName = getDataFolder() + "/sections/2v2/battle_2v2_" + i;
@@ -122,11 +158,8 @@ public final class BridgeWars extends JavaPlugin {
 
         saveBattleConfig();
         savePlayerConfig();
+        saveDefaultConfig();
         getLogger().info("O plugin BridgeWars foi encerrado!");
-    }
-
-    public PlayerWinner getPlayerWinner() {
-        return playerWinner;
     }
 
     // Criar o arquivo de database battle.yml
@@ -196,7 +229,8 @@ public final class BridgeWars extends JavaPlugin {
         }
     }
 
-    //Getters dos arquivos battle.yml e player.yml
+    //Getters dos arquivos battle.yml, player.yml
+
     public FileConfiguration getBattleConfig() {
         return this.battleConfig;
     }
@@ -246,28 +280,122 @@ public final class BridgeWars extends JavaPlugin {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regionManager = container.get(BukkitAdapter.adapt(world));
 
-        if (regionManager != null) {
-            BlockVector3 min = BlockVector3.at(world.getWorldBorder().getCenter().getX() - world.getWorldBorder().getSize() / 2, 0, world.getWorldBorder().getCenter().getZ() - world.getWorldBorder().getSize() / 2);
-            BlockVector3 max = BlockVector3.at(world.getWorldBorder().getCenter().getX() + world.getWorldBorder().getSize() / 2, world.getMaxHeight(), world.getWorldBorder().getCenter().getZ() + world.getWorldBorder().getSize() / 2);
-            ProtectedRegion region = new ProtectedCuboidRegion("no-build", min, max);
-
-            region.setFlag(Flags.BLOCK_BREAK, StateFlag.State.DENY);
-            region.setFlag(Flags.BLOCK_PLACE, StateFlag.State.DENY);
-            region.setFlag(Flags.TNT, StateFlag.State.DENY);
-            region.setFlag(Flags.OTHER_EXPLOSION, StateFlag.State.DENY);
-            region.setFlag(Flags.FIRE_SPREAD, StateFlag.State.DENY);
-            region.setFlag(Flags.LAVA_FIRE, StateFlag.State.DENY);
-            region.setFlag(Flags.LIGHTNING, StateFlag.State.DENY);
-            region.setFlag(Flags.CHEST_ACCESS, StateFlag.State.ALLOW);
-            region.setFlag(Flags.PVP, StateFlag.State.ALLOW);
-            if (world.getName().startsWith(getDataFolder() + "/sections/4v4/battle_4v4_")) {
-                region.setFlag(Flags.MOB_SPAWNING, StateFlag.State.DENY);
-                region.setFlag(Flags.MOB_DAMAGE, StateFlag.State.DENY);
-            }
-
-            regionManager.addRegion(region);
+        if (regionManager == null) {
+            getLogger().severe("RegionManager é nulo no mundo: " + world.getName());
+            return;
         }
 
+        double worldBorderSize = world.getWorldBorder().getSize() / 2;
+        double centerX = world.getWorldBorder().getCenter().getX();
+        double centerZ = world.getWorldBorder().getCenter().getZ();
+        BlockVector3 min = BlockVector3.at(centerX - worldBorderSize, 0, centerZ - worldBorderSize);
+        BlockVector3 max = BlockVector3.at(centerX + worldBorderSize, world.getMaxHeight(), centerZ + worldBorderSize);
+
+        ProtectedCuboidRegion globalRegion = new ProtectedCuboidRegion("bw-default", min, max);
+
+        globalRegion.setFlag(Flags.BLOCK_BREAK, StateFlag.State.DENY);
+        globalRegion.setFlag(Flags.BLOCK_PLACE, StateFlag.State.DENY);
+        globalRegion.setFlag(Flags.TNT, StateFlag.State.DENY);
+        globalRegion.setFlag(Flags.OTHER_EXPLOSION, StateFlag.State.DENY);
+        globalRegion.setFlag(Flags.FIRE_SPREAD, StateFlag.State.DENY);
+        globalRegion.setFlag(Flags.LAVA_FIRE, StateFlag.State.DENY);
+        globalRegion.setFlag(Flags.LIGHTNING, StateFlag.State.DENY);
+
+        String worldName = world.getName();
+        if (worldName.startsWith(getDataFolder() + "/sections/4v4/battle_4v4_")) {
+            globalRegion.setFlag(Flags.CHEST_ACCESS, StateFlag.State.ALLOW);
+            globalRegion.setFlag(Flags.PVP, StateFlag.State.ALLOW);
+            globalRegion.setFlag(Flags.MOB_SPAWNING, StateFlag.State.DENY);
+            globalRegion.setFlag(Flags.MOB_DAMAGE, StateFlag.State.DENY);
+        } else if (worldName.startsWith(getDataFolder() + "/sections/2v2/battle_2v2_")) {
+            globalRegion.setFlag(Flags.PVP, StateFlag.State.ALLOW);
+            globalRegion.setFlag(Flags.MOB_SPAWNING, StateFlag.State.ALLOW);
+            globalRegion.setFlag(Flags.MOB_DAMAGE, StateFlag.State.ALLOW);
+        }
+
+        if (regionManager.getRegion("bw-default") == null) {
+            regionManager.addRegion(globalRegion);
+        } else {
+            regionManager.getRegion("bw-default").setFlags(globalRegion.getFlags());
+        }
+
+        try {
+            regionManager.save();
+            getLogger().info("Região 'bw-default' criada e atualizada com sucesso!.");
+        } catch (Exception e) {
+            getLogger().severe("Houve uma falha criação ou atualização da região: " + e.getMessage());
+        }
+    }
+    public String getSpawnWorld() { return spawnWorld; }
+    public String getSectionsBaseFolder() { return sectionsBaseFolder; }
+    public String getSubfolder2v2() { return subfolder2v2; }
+    public String getSubfolder4v4() { return subfolder4v4; }
+    public String getBattleWorldName2v2(){ return battleWorldName2v2; }
+    public String getBattleWorldName4v4(){ return battleWorldName4v4; }
+    public String getGroup2v2Prefix() { return group2v2Prefix; }
+    public String getGroup4v4Prefix() { return group4v4Prefix; }
+    public int getClockTime2v2() { return clockTime2v2; }
+    public boolean isAllow2v2() { return allow2v2; }
+    public boolean isAllow4v4() { return allow4v4; }
+    public String getSchemBaseFolder() { return schemBaseFolder; }
+    public String getSchemSub2v2() { return schemSub2v2; }
+    public String getSchemSub4v4() { return schemSub4v4; }
+    public String getTemName2v2() { return TemName2v2; }
+    public String getTemName4v4() { return TemName4v4; }
+    public int getBattleStartingTime() { return battleStartingTime; }
+    /*
+    public boolean isAllowClock2v2() { return allowClock2v2; }
+    public boolean isJoinMessages() { return joinMessages; }
+    public boolean isQuitMessages() { return quitMessages; }
+
+    public boolean isAllowSpectateCommand() { return allowSpectateCommand; }
+
+     */
+    public String getServerPrefix() { return serverPrefix; }
+    public List<String> getRanksPrefix() { return ranksPrefix; }
+    public List<Double> getFirst2v2() { return playerF2v2; }
+    public List<Double> getSecond2v2() { return playerS2v2; }
+    public List<Double> getThird2v2() { return playerT2v2; }
+    public List<Double> getFirst4v4() { return playerF4v4; }
+    public List<Double> getSecond4v4() { return playerS4v4; }
+    public List<Double> getThird4v4() { return playerT4v4; }
+
+    public void loadConfigurations() {
+        FileConfiguration config = getConfig();
+
+        spawnWorld = config.getString("geral.spawn-world", "world");
+        sectionsBaseFolder = config.getString("battle-worlds.sections-base-folder", "/sections");
+        subfolder2v2 = config.getString("battle-worlds.sections-2v2-subfolder", "/2v2");
+        subfolder4v4 = config.getString("battle-worlds.sections-4v4-subfolder", "/4v4");
+        battleWorldName2v2 = config.getString("battle-worlds.battle2v2-template-name", "/battle_2v2_");
+        battleWorldName4v4 = config.getString("battle-worlds.battle4v4-template-name", "/battle_4v4_");
+        group2v2Prefix = config.getString("battle-configs.2v2.group-prefix", "GROUP");
+        group4v4Prefix = config.getString("battle-configs.4v4.group-prefix", "GROUP");
+        clockTime2v2 = config.getInt("battle-configs.2v2.clock-time", 200);
+        allow2v2 = config.getBoolean("battle-modes.allow-2v2", true);
+        allow4v4 = config.getBoolean("battle-modes.allow-4v4", true);
+        battleStartingTime = config.getInt("battle-configs.battle-configs", 5);
+
+        schemBaseFolder = config.getString("schematics.schematics-base-folder", "/schematics");
+        schemSub2v2 = config.getString("schematics.schematics-2v2-subfodler", "/2v2");
+        schemSub4v4 = config.getString("schematics.schematics-4v4-subfolder", "/4v4");
+        TemName2v2 = config.getString("schematics.schematic2v2-template-name", "/default_2v2.schem");
+        TemName4v4 = config.getString("schematics.schematic4v4-template-name", "/");
+        /*
+        allowClock2v2 = config.getBoolean("battle-worlds.activate-clock-2v2", false);
+        joinMessages = config.getBoolean("chat.join-messages", false);
+        quitMessages = config.getBoolean("chat.quit-messages", false);
+        allowSpectateCommand = config.getBoolean("battle-modes.allow-spectate-command", true);
+
+         */
+        ranksPrefix = config.getStringList("geral.ranks-prefix");
+        serverPrefix = config.getString("chat.server-prefix", "§6[BW-INFO]");
+        playerF2v2 = config.getDoubleList("podium.player-first-2v2");
+        playerS2v2 = config.getDoubleList("podium.player-second-2v2");
+        playerT2v2 = config.getDoubleList("podium.player-third-2v2");
+        playerF4v4 = config.getDoubleList("podium.player-first-4v4");
+        playerS4v4 = config.getDoubleList("podium.player-second-4v4");
+        playerT4v4 = config.getDoubleList("podium.player-third-4v4");
     }
 
 }

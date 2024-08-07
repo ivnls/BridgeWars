@@ -25,14 +25,48 @@ public class StartBattle implements Listener {
     private final BridgeWars plugin;
     private final GenerateChest generateChest;
 
+    private int clockTime2v2;
+
+    private String sectionsBaseFolder;
+    private String subFolder2v2;
+    private String subFolder4v4;
+    private String battleWorldName2v2;
+    private String battleWorldName4v4;
+    private String nameSpawnWorld;
+    private String group2v2Prefix;
+    private String group4v4Prefix;
+    private int battleStartingTime;
+
+    private String schemBaseFolder;
+    private String schemSub2v2;
+    private String schemSub4v4;
+    private String TemName2v2;
+    private String TemName4v4;
+
     public StartBattle(BridgeWars plugin, GenerateChest generateChest) {
         this.plugin = plugin;
         this.generateChest = generateChest;
+        this.clockTime2v2 = plugin.getClockTime2v2();
+        this.nameSpawnWorld = plugin.getSpawnWorld();
+        this.battleStartingTime = plugin.getBattleStartingTime();
+        this.group2v2Prefix = plugin.getGroup2v2Prefix() + " ";
+        this.group4v4Prefix = plugin.getGroup4v4Prefix() + " ";
+
+        this.sectionsBaseFolder = plugin.getSectionsBaseFolder();
+        this.subFolder2v2 = plugin.getSubfolder2v2();
+        this.subFolder4v4 = plugin.getSubfolder4v4();
+        this.battleWorldName2v2 = plugin.getBattleWorldName2v2();
+        this.battleWorldName4v4 = plugin.getBattleWorldName4v4();
+
+        this.schemBaseFolder = plugin.getSchemBaseFolder();
+        this.schemSub2v2 = plugin.getSchemSub2v2();
+        this.schemSub4v4 = plugin.getSchemSub4v4();
+        this.TemName2v2 = plugin.getTemName2v2();
+        this.TemName4v4 = plugin.getTemName4v4();
     }
 
     Random rand = new Random();
 
-    String groupPrefix = "GRUPO ";
 
     // Aqui é feita a lógica de inicialização de uma partida 2v2 e 4v4, além de gerar as pontes depois de
     // 15 segundos para partidas 4v4. (Para partidas 2v2 as pontes são geradas em um Listener PlayerDeath, pois
@@ -46,13 +80,13 @@ public class StartBattle implements Listener {
 
         //>>>>>>>>>>>>>>>>>> PARTIDA 2V2 <<<<<<<<<<<<<<<<<<<<<<<<
 
-        if (toWorld.getPlayers().size() == 2 && toWorld.getName().startsWith(plugin.getDataFolder() + "/sections/2v2/battle_2v2_")) {
+        if (toWorld.getPlayers().size() == 2 && toWorld.getName().startsWith(plugin.getDataFolder() + sectionsBaseFolder + schemSub2v2 + battleWorldName2v2)) {
             plugin.is2v2BattleStart(toWorld.getName(), true);
 
             preparePlayers2v2(toWorld);
 
             // Deletar o prefixo do grupo ao jogador entrar no spawn
-        } else if (toWorld.getName().equals("world")) {
+        } else if (toWorld.getName().equals(nameSpawnWorld)) {
             ScoreboardManager manager = Bukkit.getScoreboardManager();
             Scoreboard board = manager.getNewScoreboard();
 
@@ -60,17 +94,18 @@ public class StartBattle implements Listener {
 
             //>>>>>>>>>>>>>>>>>> PARTIDA 4V4 <<<<<<<<<<<<<<<<<<<<<<<<
 
-        } else if (toWorld.getPlayers().size() == 4 && toWorld.getName().startsWith(plugin.getDataFolder() + "/sections/4v4/battle_4v4_")) {
+        } else if (toWorld.getPlayers().size() == 4 && toWorld.getName().startsWith(plugin.getDataFolder() + sectionsBaseFolder + schemSub4v4 + battleWorldName4v4)) {
             plugin.is4v4BattleStart(toWorld.getName(), true);
 
             preparePlayers4v4(toWorld);
         }
 
-        if (!toWorld.getName().equals("world") && !worldName.isEmpty()) {
+        if (!toWorld.getName().equals(nameSpawnWorld) && !worldName.isEmpty()) {
             char lastChar = worldName.charAt(worldName.length() - 1);
-            player.sendMessage("&bVocê entrou na partida: " + lastChar);
+            int sessionNumberDisplay = Integer.parseInt(String.valueOf(lastChar));
+            player.sendMessage("§bVocê entrou na partida: §6" + sessionNumberDisplay);
         } else {
-            player.sendMessage("&bVocê voltou ao spawn!");
+            player.sendMessage("§bVocê voltou ao spawn!");
         }
     }
 
@@ -81,15 +116,17 @@ public class StartBattle implements Listener {
         new BukkitRunnable() {
             //pos3 = -32, 18, 28
 
-            int carac0 = 1;
-            int carac1 = 2;
-            int carac2 = 5;
+            String ClockTimeString = Integer.toString(clockTime2v2);
+
+            int carac0 = ClockTimeString.charAt(0);
+            int carac1 = ClockTimeString.charAt(1);
+            int carac2 = ClockTimeString.charAt(2);
 
 
             @Override
             public void run() {
 
-                if (toWorld.getPlayers().size() >= 2) {
+                if (!toWorld.getPlayers().isEmpty()) {
                     if (carac0 == 0 && carac1 == 0 && carac2 < 0) {
                         cancel();
                         return;
@@ -136,12 +173,10 @@ public class StartBattle implements Listener {
 
         countdown(toWorld);
 
-        String schematicsFolder4v4 = "4v4";
-
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (toWorld.getPlayers().size() == 4) {
+            if (!toWorld.getPlayers().isEmpty()) {
                 for (Player p : toWorld.getPlayers()) {
-                    p.sendMessage("As pontes serão abertas!");
+                    p.sendMessage("§2As pontes serão abertas!");
                 }
 
                 //Carregamento da schematic para a ponte
@@ -195,8 +230,8 @@ public class StartBattle implements Listener {
                     int finalI = i + 1;
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
 
-                        File baseDir = new File(plugin.getDataFolder() + "schematics");
-                        File subDir = new File(baseDir + schematicsFolder4v4);
+                        File baseDir = new File(plugin.getDataFolder() + schemBaseFolder);
+                        File subDir = new File(baseDir + schemSub4v4);
                         File bridgeSchematic = new File(subDir, finalI + ".schem");
 
                         Clipboard clipboard = ManageSchematics.loadSchematic(bridgeSchematic);
@@ -217,7 +252,7 @@ public class StartBattle implements Listener {
 
     private void countdown(World toWorld) {
         new BukkitRunnable() {
-            int currentCount = 5;
+            int currentCount = battleStartingTime;
 
             @Override
             public void run() {
@@ -243,7 +278,7 @@ public class StartBattle implements Listener {
 
     private void generateBridge2v2(World toWorld) {
 
-        if (toWorld.getPlayers().size() == 2) {
+        if (!toWorld.getPlayers().isEmpty()) {
             for (Player p : toWorld.getPlayers()) {
                 p.sendMessage("§2As pontes serão abertas!");
             }
@@ -283,7 +318,7 @@ public class StartBattle implements Listener {
                 int finalI = i + 1;
                 Bukkit.getScheduler().runTaskLater(plugin, () -> {
 
-                    File bridgeSchematic = new File(plugin.getDataFolder() + "/schematics/2v2/" + "default_2v2" + ".schem");
+                    File bridgeSchematic = new File(plugin.getDataFolder() + schemBaseFolder + schemSub2v2 + TemName2v2);
                     Clipboard clipboardo = ManageSchematics.loadSchematic(bridgeSchematic);
                     Location pasteLocation = new Location(toWorld, x2v2, y2v2, z2v2);
                     ManageSchematics.pasteSchematic(clipboardo, pasteLocation, false);
@@ -303,17 +338,16 @@ public class StartBattle implements Listener {
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         Scoreboard board = manager.getNewScoreboard();
 
-
         // Criar 2 equipes
         for (int i = 1; i <= 2; i++) {
-            Team team = board.registerNewTeam(groupPrefix + i);
-            team.setPrefix(groupPrefix + i + " ");
+            Team team = board.registerNewTeam(group2v2Prefix + i);
+            team.setPrefix(group2v2Prefix + i + " ");
         }
 
         // Atribuir cada jogador a uma equipe
         int teamNumber = 1;
         for (Player p : toWorld.getPlayers()) {
-            Team team = board.getTeam(groupPrefix + teamNumber);
+            Team team = board.getTeam(group2v2Prefix + teamNumber);
             team.addEntry(p.getName());
             p.setScoreboard(board);
 
@@ -431,8 +465,8 @@ public class StartBattle implements Listener {
         Scoreboard board = manager.getNewScoreboard();
 
         for (int i = 1; i <= 4; i++) {
-            Team team = board.registerNewTeam(groupPrefix + i);
-            team.setPrefix(groupPrefix + i + " ");
+            Team team = board.registerNewTeam(group4v4Prefix + i);
+            team.setPrefix(group4v4Prefix + i + " ");
         }
 
         for (List<Location> ilha : bausNasIlhas) {
@@ -449,7 +483,7 @@ public class StartBattle implements Listener {
 
         int teamNumber = 1;
         for (Player p : toWorld.getPlayers()) {
-            Team team = board.getTeam(groupPrefix + teamNumber);
+            Team team = board.getTeam(group4v4Prefix + teamNumber);
             if (team != null) {
                 team.addEntry(p.getName());
                 p.setScoreboard(board);
@@ -539,6 +573,9 @@ public class StartBattle implements Listener {
     }
 
     private void controllerClock2v2(int carac0, int carac1, int carac2, World toWorld, BukkitRunnable bukkitRunnable) {
+
+
+
         Location soundLoc = new Location(toWorld, -32, 18, 28);
 
         if (carac0 == 0 && carac1 == 0 && carac2 <= 10 && carac2 != 0) {

@@ -3,6 +3,10 @@ package ivanhauu.tech.bridgewars.utils;
 import ivanhauu.tech.bridgewars.BridgeWars;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class GetPlayerRank {
 
     private final BridgeWars plugin;
@@ -15,22 +19,26 @@ public class GetPlayerRank {
         int wins4v4 = plugin.getPlayerConfig().getInt("players." + player.getName() + ".4v4wins");
         int wins2v2 = 2 * plugin.getPlayerConfig().getInt("players." + player.getName() + ".2v2wins"); //As partidas 8v8 tem o dobro de pontuação!
 
+        List<String> prefixList = new ArrayList<String>();
+
+        prefixList = plugin.getRanksPrefix();
+
         int ptsTotal = wins4v4 + wins2v2;
 
         if (ptsTotal >= 50) {
-            return "§6[♅]";
+            return prefixList.get(0);
         } else if (ptsTotal >= 40) {
-            return "§9[☉]"; //Rank MESTRE (☉) 40 a 50
+            return prefixList.get(1); //Rank MESTRE (☉) 40 a 50
         } else if (ptsTotal >= 30) {
-            return "§b[★]"; //Rank PROFISSIONAL (★) 30 a 40
+            return prefixList.get(2); //Rank PROFISSIONAL (★) 30 a 40
         } else if (ptsTotal >= 20) {
-            return "§4[♯]"; //Rank LUTADOR (♯) 10 a 20
+            return prefixList.get(3); //Rank LUTADOR (♯) 10 a 20
         } else if (ptsTotal >= 10) {
-            return "§e[♖]"; //Rank ENGAJADO (♖) 20 a 30
+            return prefixList.get(4); //Rank ENGAJADO (♖) 20 a 30
         } else if (ptsTotal >= 5) {
-            return "§2[♤]"; //rank INICIANTE (♤) 5 a 10
+            return prefixList.get(5); //rank INICIANTE (♤) 5 a 10
         } else {
-            return "§7[D]"; //Rank Default (Provavelmente nenhuma insígnia)
+            return prefixList.get(6); //Rank Default (Provavelmente nenhuma insígnia)
         }
     }
 }

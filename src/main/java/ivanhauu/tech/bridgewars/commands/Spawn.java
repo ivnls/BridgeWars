@@ -15,10 +15,13 @@ public class Spawn implements CommandExecutor {
 
     private final BridgeWars plugin;
 
+    private String sectionsBaseFolder;
+
     public Spawn(BridgeWars plugin) {
         this.plugin = plugin;
-    }
 
+        this.sectionsBaseFolder = plugin.getSectionsBaseFolder();
+    }
 
     // Simples comando para voltar ao spawn quando o player estiver em uma partida.
 
@@ -39,12 +42,12 @@ public class Spawn implements CommandExecutor {
 
         String worldName = playerSender.getWorld().getName();
 
-        if (worldName.startsWith(plugin.getDataFolder() + "/sections/")) {
+        if (worldName.startsWith(plugin.getDataFolder() + sectionsBaseFolder)) {
             boolean is2v2BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + worldName + ".is2v2BattleStarted");
             boolean is4v4BattleStarted = plugin.getBattleConfig().getBoolean("worlds." + worldName + ".is4v4BattleStarted");
 
-            if (is2v2BattleStarted || is4v4BattleStarted) {
-                playerSender.sendMessage("§6[BW-INFO] §cVocê não pode sair de uma partida em andamento!");
+            if ((is2v2BattleStarted || is4v4BattleStarted) && playerSender.getGameMode() == GameMode.SURVIVAL) {
+                playerSender.sendMessage(plugin.getServerPrefix() + "§cVocê não pode sair de uma partida em andamento!");
                 return false;
             }
         }
@@ -55,7 +58,6 @@ public class Spawn implements CommandExecutor {
         playerSender.setHealth(20);
         playerSender.setFoodLevel(20);
         playerSender.setGameMode(GameMode.SURVIVAL);
-        playerSender.sendMessage("Você voltou ao spawn!");
 
         return true;
     }
